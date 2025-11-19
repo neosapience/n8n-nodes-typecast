@@ -1,29 +1,32 @@
-import type {
-	IExecuteFunctions,
-	INodeExecutionData,
-	INodeType,
-	INodeTypeDescription,
+import {
+	NodeConnectionTypes,
+	type IExecuteFunctions,
+	type INodeExecutionData,
+	type INodeType,
+	type INodeTypeDescription,
+	type IDataObject,
 } from 'n8n-workflow';
 
-import { typecastApiRequest, typecastApiRequestBinary } from './GenericFunctions';
+import { typecastApiRequest, typecastApiRequestBinary } from './shared/transport';
 
-import { voiceOperations, voiceFields } from './descriptions/VoiceDescription';
-import { speechOperations, speechFields } from './descriptions/SpeechDescription';
+import { voiceDescription } from './resources/voice';
+import { speechDescription } from './resources/speech';
 
 export class Typecast implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Typecast',
 		name: 'typecast',
-		icon: 'file:typecast.png',
+		icon: 'file:../../icons/typecast.svg',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Interact with Typecast TTS API',
+		usableAsTool: true,
 		defaults: {
 			name: 'Typecast',
 		},
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
 				name: 'typecastApi',
@@ -51,10 +54,8 @@ export class Typecast implements INodeType {
 				],
 				default: 'speech',
 			},
-			...voiceOperations,
-			...voiceFields,
-			...speechOperations,
-			...speechFields,
+			...voiceDescription,
+			...speechDescription,
 		],
 	};
 
@@ -72,7 +73,7 @@ export class Typecast implements INodeType {
 					// ----------------------------------
 					if (operation === 'getMany') {
 						const model = this.getNodeParameter('model', i) as string;
-						const qs: any = {};
+						const qs: IDataObject = {};
 						if (model) {
 							qs.model = model;
 						}
@@ -89,7 +90,7 @@ export class Typecast implements INodeType {
 					if (operation === 'get') {
 						const voiceId = this.getNodeParameter('voiceId', i) as string;
 						const model = this.getNodeParameter('model', i) as string;
-						const qs: any = {};
+						const qs: IDataObject = {};
 						if (model) {
 							qs.model = model;
 						}
@@ -115,9 +116,9 @@ export class Typecast implements INodeType {
 						const voiceId = this.getNodeParameter('voiceId', i) as string;
 						const text = this.getNodeParameter('text', i) as string;
 						const model = this.getNodeParameter('model', i) as string;
-						const additionalOptions = this.getNodeParameter('additionalOptions', i, {}) as any;
+						const additionalOptions = this.getNodeParameter('additionalOptions', i, {}) as IDataObject;
 
-						const body: any = {
+						const body: IDataObject = {
 							voice_id: voiceId,
 							text,
 							model,
@@ -129,7 +130,7 @@ export class Typecast implements INodeType {
 						}
 
 						// Add emotion settings
-						const prompt: any = {};
+						const prompt: IDataObject = {};
 						if (additionalOptions.emotionPreset) {
 							prompt.emotion_preset = additionalOptions.emotionPreset;
 						}
@@ -141,7 +142,7 @@ export class Typecast implements INodeType {
 						}
 
 						// Add output settings
-						const output: any = {};
+						const output: IDataObject = {};
 						if (additionalOptions.volume !== undefined) {
 							output.volume = additionalOptions.volume;
 						}
@@ -181,7 +182,7 @@ export class Typecast implements INodeType {
 								model,
 							},
 							binary: {
-								[binaryProperty]: await this.helpers.prepareBinaryData(
+								[binaryProperty as string]: await this.helpers.prepareBinaryData(
 									response,
 									`audio.${audioFormat}`,
 									mimeType,

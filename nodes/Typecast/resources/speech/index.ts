@@ -1,15 +1,17 @@
 import type { INodeProperties } from 'n8n-workflow';
 
-export const speechOperations: INodeProperties[] = [
+const showOnlyForSpeech = {
+	resource: ['speech'],
+};
+
+export const speechDescription: INodeProperties[] = [
 	{
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
 		displayOptions: {
-			show: {
-				resource: ['speech'],
-			},
+			show: showOnlyForSpeech,
 		},
 		options: [
 			{
@@ -21,9 +23,6 @@ export const speechOperations: INodeProperties[] = [
 		],
 		default: 'textToSpeech',
 	},
-];
-
-export const speechFields: INodeProperties[] = [
 	// ----------------------------------
 	//         speech:textToSpeech
 	// ----------------------------------

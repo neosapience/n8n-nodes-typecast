@@ -1,0 +1,59 @@
+import type {
+	IExecuteFunctions,
+	ILoadOptionsFunctions,
+	IHookFunctions,
+	IHttpRequestMethods,
+	IDataObject,
+	IHttpRequestOptions,
+} from 'n8n-workflow';
+
+export async function typecastApiRequest(
+	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
+	method: IHttpRequestMethods,
+	endpoint: string,
+	body: IDataObject = {},
+	qs: IDataObject = {},
+) {
+	const options: IHttpRequestOptions = {
+		method,
+		body,
+		qs,
+		url: `https://api.typecast.ai/v1${endpoint}`,
+		json: true,
+	};
+
+	try {
+		return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
+	} catch (error) {
+		throw new Error(`Typecast API request failed: ${(error as Error).message}`);
+	}
+}
+
+export async function typecastApiRequestBinary(
+	this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
+	method: IHttpRequestMethods,
+	endpoint: string,
+	body: IDataObject = {},
+	qs: IDataObject = {},
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> {
+	const credentials = await this.getCredentials('typecastApi');
+
+	const options: IHttpRequestOptions = {
+		method,
+		body,
+		qs,
+		url: `https://api.typecast.ai/v1${endpoint}`,
+		json: true,
+		encoding: 'arraybuffer',
+		headers: {
+			'X-API-KEY': credentials.apiKey as string,
+		},
+	};
+
+	try {
+		return await this.helpers.httpRequest(options);
+	} catch (error) {
+		throw new Error(`Typecast API binary request failed: ${(error as Error).message}`);
+	}
+}

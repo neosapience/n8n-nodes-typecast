@@ -1,15 +1,17 @@
 import type { INodeProperties } from 'n8n-workflow';
 
-export const voiceOperations: INodeProperties[] = [
+const showOnlyForVoice = {
+	resource: ['voice'],
+};
+
+export const voiceDescription: INodeProperties[] = [
 	{
 		displayName: 'Operation',
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
 		displayOptions: {
-			show: {
-				resource: ['voice'],
-			},
+			show: showOnlyForVoice,
 		},
 		options: [
 			{
@@ -27,9 +29,6 @@ export const voiceOperations: INodeProperties[] = [
 		],
 		default: 'getMany',
 	},
-];
-
-export const voiceFields: INodeProperties[] = [
 	// ----------------------------------
 	//         voice:get
 	// ----------------------------------
@@ -67,7 +66,6 @@ export const voiceFields: INodeProperties[] = [
 		default: 'ssfm-v21',
 		description: 'Voice model to use',
 	},
-
 	// ----------------------------------
 	//         voice:getMany
 	// ----------------------------------

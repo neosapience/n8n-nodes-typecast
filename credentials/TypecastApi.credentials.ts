@@ -1,5 +1,6 @@
 import {
 	IAuthenticateGeneric,
+	Icon,
 	ICredentialTestRequest,
 	ICredentialType,
 	INodeProperties,
@@ -8,7 +9,8 @@ import {
 export class TypecastApi implements ICredentialType {
 	name = 'typecastApi';
 	displayName = 'Typecast API';
-	documentationUrl = 'httpsTypecastAiDocsApiReferenceEndpointTextToSpeechTextToSpeech';
+	icon: Icon = 'file:../icons/typecast.svg';
+	documentationUrl = 'https://typecast.ai/docs/api-reference/endpoint/text-to-speech/text-to-speech';
 	properties: INodeProperties[] = [
 		{
 			displayName: 'API Key',
