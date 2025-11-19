@@ -1,0 +1,35 @@
+{
+	"compilerOptions": {
+		"target": "ES2019",
+		"module": "commonjs",
+		"lib": [
+			"ES2019"
+		],
+		"declaration": true,
+		"outDir": "./dist",
+		"rootDir": "./",
+		"composite": true,
+		"removeComments": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"moduleResolution": "node"
+	},
+	"include": [
+		"credentials/**/*",
+		"nodes/**/*"
+	],
+	"exclude": [
+		"node_modules/**/*",
+		"dist/**/*"
+	]
+}
