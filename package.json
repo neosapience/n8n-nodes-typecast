@@ -1,6 +1,6 @@
 {
-  "name": "n8n-nodes-typecast",
-  "version": "0.1.0",
+  "name": "@neosapience/n8n-nodes-typecast",
+  "version": "1.0.0",
   "description": "n8n node for Typecast TTS API integration",
   "keywords": [
     "n8n-community-node-package",
@@ -10,14 +10,14 @@
     "text-to-speech"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/your-org/n8n-nodes-typecast",
+  "homepage": "https://github.com/neosapience/n8n-nodes-typecast",
   "author": {
-    "name": "Typecast Node Developer",
-    "email": "dev@example.com"
+    "name": "Typecast Developers",
+    "email": "developers@neosapience.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/n8n-nodes-typecast.git"
+    "url": "https://github.com/neosapience/n8n-nodes-typecast.git"
   },
   "main": "index.js",
   "scripts": {
