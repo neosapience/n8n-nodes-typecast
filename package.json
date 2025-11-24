@@ -1,6 +1,6 @@
 {
   "name": "@neosapience/n8n-nodes-typecast",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "n8n node for Typecast TTS API integration",
   "keywords": [
     "n8n-community-node-package",
@@ -44,6 +44,8 @@
     "dist",
     "README.md",
     "LICENSE",
+    "credentials",
+    "nodes",
     "icons"
   ],
   "n8n": {
