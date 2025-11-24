@@ -1,5 +1,7 @@
 # n8n-nodes-typecast
 
+[![npm version](https://img.shields.io/npm/v/@neosapience/n8n-nodes-typecast.svg)](https://www.npmjs.com/package/@neosapience/n8n-nodes-typecast)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io/) workflows with this community node.
 
@@ -34,7 +36,21 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 
 ## Installation
 
+### Via npm
+
+```bash
+npm install @neosapience/n8n-nodes-typecast
+```
+
+### Via n8n Community Nodes
+
 Follow the [n8n community node installation guide](https://docs.n8n.io/integrations/community-nodes/installation/).
+
+In n8n, go to **Settings > Community Nodes** and install:
+
+```
+@neosapience/n8n-nodes-typecast
+```
 
 ## Compatibility
 

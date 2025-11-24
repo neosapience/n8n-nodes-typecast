@@ -5,3 +5,6 @@ dist/
 .vscode/
 .idea/
 *.tsbuildinfo
+
+# npm credentials
+.npmrc
