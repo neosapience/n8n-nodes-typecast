@@ -37,8 +37,6 @@ export async function typecastApiRequestBinary(
 	qs: IDataObject = {},
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
-	const credentials = await this.getCredentials('typecastApi');
-
 	const options: IHttpRequestOptions = {
 		method,
 		body,
@@ -46,13 +44,10 @@ export async function typecastApiRequestBinary(
 		url: `https://api.typecast.ai/v1${endpoint}`,
 		json: true,
 		encoding: 'arraybuffer',
-		headers: {
-			'X-API-KEY': credentials.apiKey as string,
-		},
 	};
 
 	try {
-		return await this.helpers.httpRequest(options);
+		return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
 	} catch (error) {
 		throw new Error(`Typecast API binary request failed: ${(error as Error).message}`);
 	}
