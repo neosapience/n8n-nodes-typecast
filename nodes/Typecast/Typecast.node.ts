@@ -33,9 +33,6 @@ export class Typecast implements INodeType {
 				required: true,
 			},
 		],
-		requestDefaults: {
-			baseURL: 'https://api.typecast.ai/v1',
-		},
 		properties: [
 			{
 				displayName: 'Resource',
