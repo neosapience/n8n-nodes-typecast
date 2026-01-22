@@ -13,12 +13,13 @@ export async function typecastApiRequest(
 	endpoint: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
+	version: string = 'v2',
 ) {
 	const options: IHttpRequestOptions = {
 		method,
 		body,
 		qs,
-		url: `https://api.typecast.ai/v1${endpoint}`,
+		url: `https://api.typecast.ai/${version}${endpoint}`,
 		json: true,
 	};
 
@@ -35,13 +36,14 @@ export async function typecastApiRequestBinary(
 	endpoint: string,
 	body: IDataObject = {},
 	qs: IDataObject = {},
+	version: string = 'v1',
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
 	const options: IHttpRequestOptions = {
 		method,
 		body,
 		qs,
-		url: `https://api.typecast.ai/v1${endpoint}`,
+		url: `https://api.typecast.ai/${version}${endpoint}`,
 		json: true,
 		encoding: 'arraybuffer',
 	};

@@ -69,12 +69,24 @@ export class Typecast implements INodeType {
 					//         voice:getMany
 					// ----------------------------------
 					if (operation === 'getMany') {
-						const model = this.getNodeParameter('model', i) as string;
+						const filters = this.getNodeParameter('filters', i, {}) as IDataObject;
 						const qs: IDataObject = {};
-						if (model) {
-							qs.model = model;
+						
+						// Add filters to query string
+						if (filters.model) {
+							qs.model = filters.model;
 						}
-						const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs);
+						if (filters.gender) {
+							qs.gender = filters.gender;
+						}
+						if (filters.age) {
+							qs.age = filters.age;
+						}
+						if (filters.use_cases) {
+							qs.use_cases = filters.use_cases;
+						}
+						
+						const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v2');
 						returnData.push(...this.helpers.constructExecutionMetaData(
 							this.helpers.returnJsonArray(response),
 							{ itemData: { item: i } },
@@ -86,17 +98,13 @@ export class Typecast implements INodeType {
 					// ----------------------------------
 					if (operation === 'get') {
 						const voiceId = this.getNodeParameter('voiceId', i) as string;
-						const model = this.getNodeParameter('model', i) as string;
-						const qs: IDataObject = {};
-						if (model) {
-							qs.model = model;
-						}
 						const response = await typecastApiRequest.call(
 							this,
 							'GET',
 							`/voices/${voiceId}`,
 							{},
-							qs,
+							{},
+							'v2',
 						);
 						returnData.push(...this.helpers.constructExecutionMetaData(
 							this.helpers.returnJsonArray(response),
