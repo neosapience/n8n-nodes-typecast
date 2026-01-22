@@ -23,7 +23,7 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 
 ## Credentials Setup
 
-1. Get your API key from [Typecast Dashboard](https://typecast.ai/developers)
+1. Get your API key from [Typecast Dashboard](https://typecast.ai/developers/api/api-key)
 2. In n8n, add new credentials of type **Typecast API**
 3. Enter your API key
 
