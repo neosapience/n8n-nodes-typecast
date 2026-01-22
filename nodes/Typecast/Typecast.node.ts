@@ -126,14 +126,47 @@ export class Typecast implements INodeType {
 							body.language = additionalOptions.language;
 						}
 
-						// Add emotion settings
+						// Build prompt object based on model and emotion type
 						const prompt: IDataObject = {};
-						if (additionalOptions.emotionPreset) {
-							prompt.emotion_preset = additionalOptions.emotionPreset;
+
+						if (model === 'ssfm-v30') {
+							// Get emotion type for ssfm-v30
+							const emotionType = this.getNodeParameter('emotionType', i, 'preset') as string;
+
+							if (emotionType === 'smart') {
+								// Smart Emotion: AI automatically infers emotion from context
+								prompt.emotion_type = 'smart';
+
+								const previousText = this.getNodeParameter('previousText', i, '') as string;
+								const nextText = this.getNodeParameter('nextText', i, '') as string;
+
+								if (previousText) {
+									prompt.previous_text = previousText;
+								}
+								if (nextText) {
+									prompt.next_text = nextText;
+								}
+							} else {
+								// Preset Emotion: Manual selection
+								prompt.emotion_type = 'preset';
+
+								const emotionPreset = this.getNodeParameter('emotionPreset', i, 'normal') as string;
+								const emotionIntensity = this.getNodeParameter('emotionIntensity', i, 1) as number;
+
+								prompt.emotion_preset = emotionPreset;
+								prompt.emotion_intensity = emotionIntensity;
+							}
+						} else {
+							// ssfm-v21: Use legacy prompt format (no emotion_type field)
+							// For v21, emotion settings are in additionalOptions
+							if (additionalOptions.emotionPresetV21) {
+								prompt.emotion_preset = additionalOptions.emotionPresetV21;
+							}
+							if (additionalOptions.emotionIntensityV21 !== undefined) {
+								prompt.emotion_intensity = additionalOptions.emotionIntensityV21;
+							}
 						}
-						if (additionalOptions.emotionIntensity !== undefined) {
-							prompt.emotion_intensity = additionalOptions.emotionIntensity;
-						}
+
 						if (Object.keys(prompt).length > 0) {
 							body.prompt = prompt;
 						}
