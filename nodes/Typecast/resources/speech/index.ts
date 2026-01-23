@@ -37,7 +37,7 @@ export const speechDescription: INodeProperties[] = [
         operation: ['textToSpeech'],
       },
     },
-    default: { mode: 'id', value: '' },
+    default: { mode: 'list', value: '' },
     // eslint-disable-next-line n8n-nodes-base/node-param-description-miscased-id
     description: 'Select a voice from the list or enter a Voice ID directly',
     modes: [
