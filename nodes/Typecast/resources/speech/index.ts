@@ -52,7 +52,7 @@ export const speechDescription: INodeProperties[] = [
 				operation: ['textToSpeech'],
 			},
 		},
-		default: '',
+		default: 'Hello! Welcome to Typecast text to speech. This is a sample voice generation.',
 		typeOptions: {
 			rows: 4,
 		},
@@ -107,7 +107,7 @@ export const speechDescription: INodeProperties[] = [
 				description: 'Manually select emotion preset and intensity - best for precise control',
 			},
 		],
-		default: 'preset',
+		default: 'smart',
 		description: 'How to control emotional expression (ssfm-v30 only)\n\nSmart: AI detects emotion automatically from context. Preset: Manual selection with 7 emotion options.',
 	},
 	{
