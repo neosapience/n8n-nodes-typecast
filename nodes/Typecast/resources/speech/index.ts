@@ -338,7 +338,7 @@ export const speechDescription: INodeProperties[] = [
 				name: 'binaryProperty',
 				type: 'string',
 				default: 'data',
-				description: 'Name of the binary property to store the generated audio file\n\nDefault: "data". This allows you to reference the audio file in subsequent nodes.',
+				description: 'Name of the binary property to store the generated audio file\n\nDefault: "data" (recommended for most cases). Use this name to reference the audio in subsequent nodes (e.g., Save to File, Send Email).\n\nOnly change if you need to handle multiple audio files in the same workflow (e.g., "narration", "background_music").',
 			},
 			{
 				displayName: 'Language',
