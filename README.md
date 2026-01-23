@@ -8,18 +8,18 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 ## Features
 
 - **Voice Resource**
-	- Get Many: List all available voice models
-	- Get: Retrieve details of a specific voice model
+  - Get Many: List all available voice models
+  - Get: Retrieve details of a specific voice model
 - **Speech Resource**
-	- Text to Speech: Convert text to speech using a selected voice
+  - Text to Speech: Convert text to speech using a selected voice
 
 ## Node Structure
 
 - Node: `Typecast`
-	- Resources: `voice`, `speech`
-	- Operations:
-		- `voice`: `getMany`, `get`
-		- `speech`: `textToSpeech`
+  - Resources: `voice`, `speech`
+  - Operations:
+    - `voice`: `getMany`, `get`
+    - `speech`: `textToSpeech`
 
 ## Credentials Setup
 

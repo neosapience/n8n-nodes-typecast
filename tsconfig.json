@@ -1,41 +1,30 @@
 {
-	"compilerOptions": {
-		"target": "es2019",
-		"module": "commonjs",
-		"lib": [
-			"es2019",
-			"es2020",
-			"es2022.error"
-		],
-		"declaration": true,
-		"outDir": "./dist/",
-		"rootDir": "./",
-		"composite": true,
-		"removeComments": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
-		"forceConsistentCasingInFileNames": true,
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noImplicitReturns": true,
-		"noFallthroughCasesInSwitch": true,
-		"useUnknownInCatchVariables": false,
-		"moduleResolution": "node",
-		"incremental": true,
-		"sourceMap": true
-	},
-	"include": [
-		"credentials/**/*",
-		"nodes/**/*",
-		"package.json"
-	],
-	"exclude": [
-		"node_modules/**/*",
-		"dist/**/*"
-	]
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "lib": ["es2019", "es2020", "es2022.error"],
+    "declaration": true,
+    "outDir": "./dist/",
+    "rootDir": "./",
+    "composite": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "useUnknownInCatchVariables": false,
+    "moduleResolution": "node",
+    "incremental": true,
+    "sourceMap": true
+  },
+  "include": ["credentials/**/*", "nodes/**/*", "package.json"],
+  "exclude": ["node_modules/**/*", "dist/**/*"]
 }
