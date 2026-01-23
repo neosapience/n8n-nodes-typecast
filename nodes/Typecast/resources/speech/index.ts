@@ -90,6 +90,7 @@ export const speechDescription: INodeProperties[] = [
     displayName: 'Model',
     name: 'model',
     type: 'options',
+    required: true,
     displayOptions: {
       show: {
         resource: ['speech'],

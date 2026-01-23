@@ -70,8 +70,17 @@ export class Typecast implements INodeType {
         };
 
         try {
-          // Fetch all voices from v2 API
-          const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, {}, 'v2');
+          // Get the selected model to filter voices
+          const model = (this.getNodeParameter('model', 0) as string) || 'ssfm-v30';
+          const qs: IDataObject = {};
+          
+          // Add model filter to query string
+          if (model) {
+            qs.model = model;
+          }
+
+          // Fetch voices from v2 API filtered by model
+          const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v2');
 
           // Process the response - it could be an array directly or wrapped in a result object
           const voices = Array.isArray(response) ? response : response.result || [];
