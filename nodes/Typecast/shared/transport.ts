@@ -25,8 +25,15 @@ export async function typecastApiRequest(
 
   try {
     return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
-  } catch (error) {
-    throw new Error(`Typecast API request failed: ${(error as Error).message}`);
+  } catch (error: any) {
+    const errorMessage = error.message || 'Unknown error';
+    const statusCode = error.httpCode;
+    const errorCode = error.errorResponse?.error_code || error.error_code;
+
+    const statusDetails = statusCode ? `[${statusCode}] ` : '';
+    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
+
+    throw new Error(`Typecast API request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
   }
 }
 
@@ -50,7 +57,14 @@ export async function typecastApiRequestBinary(
 
   try {
     return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
-  } catch (error) {
-    throw new Error(`Typecast API binary request failed: ${(error as Error).message}`);
+  } catch (error: any) {
+    const errorMessage = error.message || 'Unknown error';
+    const statusCode = error.httpCode;
+    const errorCode = error.errorResponse?.error_code || error.error_code;
+
+    const statusDetails = statusCode ? `[${statusCode}] ` : '';
+    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
+
+    throw new Error(`Typecast API binary request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
   }
 }
