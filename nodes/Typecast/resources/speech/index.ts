@@ -29,7 +29,7 @@ export const speechDescription: INodeProperties[] = [
 	{
 		displayName: 'Voice ID',
 		name: 'voiceId',
-		type: 'string',
+		type: 'resourceLocator',
 		required: true,
 		displayOptions: {
 			show: {
@@ -37,9 +37,35 @@ export const speechDescription: INodeProperties[] = [
 				operation: ['textToSpeech'],
 			},
 		},
-		default: 'tc_60e5426de8b95f1d3000d7b5',
-		description: 'Voice ID in format \'tc_\' followed by a unique identifier\n\nCase-sensitive: must use lowercase (tc_xxx). Example: \'tc_60e5426de8b95f1d3000d7b5\'. Use the "Get Many" operation under Voice resource to see all available voices.',
-		placeholder: 'tc_60e5426de8b95f1d3000d7b5',
+		default: { mode: 'id', value: '' },
+		// eslint-disable-next-line n8n-nodes-base/node-param-description-miscased-id
+		description: 'Select a voice from the list or enter a Voice ID directly',
+		modes: [
+			{
+				displayName: 'From List',
+				name: 'list',
+				type: 'list',
+				typeOptions: {
+					searchListMethod: 'searchVoices',
+					searchable: true,
+				},
+			},
+			{
+				displayName: 'By ID',
+				name: 'id',
+				type: 'string',
+				placeholder: 'e.g., tc_60e5426de8b95f1d3000d7b5',
+				validation: [
+					{
+						type: 'regex',
+						properties: {
+							regex: '^tc_[a-f0-9]+$',
+							errorMessage: 'Voice ID must start with "tc_" followed by hexadecimal characters',
+						},
+					},
+				],
+			},
+		],
 	},
 	{
 		displayName: 'Text',

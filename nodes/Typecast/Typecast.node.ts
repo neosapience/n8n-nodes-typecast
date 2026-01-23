@@ -1,7 +1,9 @@
 import {
 	NodeConnectionTypes,
 	type IExecuteFunctions,
+	type ILoadOptionsFunctions,
 	type INodeExecutionData,
+	type INodeListSearchResult,
 	type INodeType,
 	type INodeTypeDescription,
 	type IDataObject,
@@ -21,6 +23,7 @@ export class Typecast implements INodeType {
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Interact with Typecast TTS API',
+		documentationUrl: 'https://typecast.ai/docs/bestpractice/n8n',
 		usableAsTool: true,
 		defaults: {
 			name: 'Typecast',
@@ -56,6 +59,107 @@ export class Typecast implements INodeType {
 		],
 	};
 
+	methods = {
+		listSearch: {
+			async searchVoices(this: ILoadOptionsFunctions, filter?: string): Promise<INodeListSearchResult> {
+				const results: INodeListSearchResult = {
+					results: [],
+				};
+
+				try {
+					// Fetch all voices from v2 API
+					const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, {}, 'v2');
+
+					// Process the response - it could be an array directly or wrapped in a result object
+					const voices = Array.isArray(response) ? response : (response.result || []);
+
+					for (const voice of voices) {
+						const voiceId = voice.voice_id;
+						const voiceName = voice.voice_name || voiceId;
+						const gender = voice.gender ? voice.gender.charAt(0).toUpperCase() + voice.gender.slice(1) : 'Unknown';
+						const age = voice.age ? voice.age.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()) : 'Unknown';
+
+						// Get supported emotions from models array (prefer ssfm-v30)
+						let emotions: string[] = [];
+						if (voice.models && Array.isArray(voice.models)) {
+							// Try to find ssfm-v30 first, then fall back to first model
+							const v30Model = voice.models.find((m: IDataObject) => m.version === 'ssfm-v30');
+							const modelToUse = v30Model || voice.models[0];
+							if (modelToUse && Array.isArray(modelToUse.emotions)) {
+								emotions = modelToUse.emotions as string[];
+							}
+						}
+						// Format emotions for display
+						const emotionList = emotions.join(', ');
+						const emotionDisplay = emotionList || 'N/A';
+
+						// Get use cases
+						const useCases = voice.use_cases || [];
+						const useCaseList = Array.isArray(useCases) ? useCases.join(', ') : '';
+						const useCaseDisplay = useCaseList || 'N/A';
+
+						// Format: Name | Gender | Age | Emotions (all info in name for visibility)
+						const displayName = `${voiceName} | ${gender} | ${age} | ${emotionDisplay}`;
+						const description = `ID: ${voiceId} | Use Cases: ${useCaseDisplay}`;
+
+						// Apply filter if provided
+						if (filter) {
+							const searchLower = filter.toLowerCase();
+							const matchesName = voiceName.toLowerCase().includes(searchLower);
+							const matchesId = voiceId.toLowerCase().includes(searchLower);
+							const matchesGender = gender.toLowerCase().includes(searchLower);
+							const matchesAge = age.toLowerCase().includes(searchLower);
+							const matchesEmotion = emotions.some((e: string) => e.toLowerCase().includes(searchLower));
+							const matchesUseCase = useCases.some((u: string) => u.toLowerCase().includes(searchLower));
+
+							if (!matchesName && !matchesId && !matchesGender && !matchesAge && !matchesEmotion && !matchesUseCase) {
+								continue;
+							}
+						}
+
+						results.results.push({
+							name: displayName,
+							value: voiceId,
+							url: `https://typecast.ai/developers/api/voices/${voiceId}`,
+							description,
+						});
+					}
+
+					// Sort by name
+					results.results.sort((a, b) => a.name.localeCompare(b.name));
+
+				} catch (error) {
+					// If API call fails, show helpful message - user can still use "By ID" mode
+					const errorMessage = (error as Error).message || 'Unknown error';
+					let hint = 'Check your Typecast API credentials';
+
+					if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
+						hint = 'Invalid API key - update your credentials';
+					} else if (errorMessage.includes('403') || errorMessage.includes('Forbidden')) {
+						hint = 'API key has no permission - check credentials';
+					} else if (errorMessage.includes('network') || errorMessage.includes('ENOTFOUND')) {
+						hint = 'Network error - check internet connection';
+					}
+
+					results.results = [
+						{
+							name: `⚠️ ${hint}`,
+							value: '',
+							description: 'Use "By ID" mode to enter Voice ID directly',
+						},
+						{
+							name: '💡 Switch to "By ID" mode to enter Voice ID manually',
+							value: '',
+							description: 'Click the dropdown on the left and select "By ID"',
+						},
+					];
+				}
+
+				return results;
+			},
+		},
+	};
+
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
@@ -71,7 +175,7 @@ export class Typecast implements INodeType {
 					if (operation === 'getMany') {
 						const filters = this.getNodeParameter('filters', i, {}) as IDataObject;
 						const qs: IDataObject = {};
-						
+
 						// Add filters to query string
 						if (filters.model) {
 							qs.model = filters.model;
@@ -85,7 +189,7 @@ export class Typecast implements INodeType {
 						if (filters.use_cases) {
 							qs.use_cases = filters.use_cases;
 						}
-						
+
 						const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v2');
 						returnData.push(...this.helpers.constructExecutionMetaData(
 							this.helpers.returnJsonArray(response),
@@ -118,7 +222,7 @@ export class Typecast implements INodeType {
 					//         speech:textToSpeech
 					// ----------------------------------
 					if (operation === 'textToSpeech') {
-						const voiceId = this.getNodeParameter('voiceId', i) as string;
+						const voiceId = this.getNodeParameter('voiceId', i, '', { extractValue: true }) as string;
 						const text = this.getNodeParameter('text', i) as string;
 						const model = this.getNodeParameter('model', i) as string;
 						const additionalOptions = this.getNodeParameter('additionalOptions', i, {}) as IDataObject;
