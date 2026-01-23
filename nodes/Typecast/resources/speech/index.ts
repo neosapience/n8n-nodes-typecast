@@ -220,6 +220,64 @@ export const speechDescription: INodeProperties[] = [
 		default: 1,
 		description: 'Controls the strength of emotional expression (0.0 - 2.0)\n\n0.0=completely neutral (no emotion), 0.5=subtle hints, 1.0=standard expression (default), 1.5=strong emphasis, 2.0=maximum intensity (highly expressive).',
 	},
+	// ----------------------------------
+	//         ssfm-v21 Emotion Settings
+	// ----------------------------------
+	{
+		displayName: 'Emotion Preset',
+		name: 'emotionPresetV21',
+		type: 'options',
+		displayOptions: {
+			show: {
+				resource: ['speech'],
+				operation: ['textToSpeech'],
+				model: ['ssfm-v21'],
+			},
+		},
+		options: [
+			{
+				name: 'Normal',
+				value: 'normal',
+				description: 'Neutral, standard tone',
+			},
+			{
+				name: 'Happy',
+				value: 'happy',
+				description: 'Joyful, cheerful expression',
+			},
+			{
+				name: 'Sad',
+				value: 'sad',
+				description: 'Melancholic, somber tone',
+			},
+			{
+				name: 'Angry',
+				value: 'angry',
+				description: 'Intense, forceful expression',
+			},
+		],
+		default: 'normal',
+		description: 'Emotion preset to apply (ssfm-v21)\n\nSupported emotions: normal, happy, sad, angry. Check available emotions for each voice through the /voices API.',
+	},
+	{
+		displayName: 'Emotion Intensity',
+		name: 'emotionIntensityV21',
+		type: 'number',
+		displayOptions: {
+			show: {
+				resource: ['speech'],
+				operation: ['textToSpeech'],
+				model: ['ssfm-v21'],
+			},
+		},
+		typeOptions: {
+			minValue: 0,
+			maxValue: 2,
+			numberPrecision: 1,
+		},
+		default: 1,
+		description: 'Controls the strength of emotional expression (0.0 - 2.0)\n\n0.0=completely neutral, 1.0=standard expression (default), 2.0=maximum intensity.',
+	},
 	{
 		displayName: 'Additional Options',
 		name: 'additionalOptions',
@@ -281,72 +339,6 @@ export const speechDescription: INodeProperties[] = [
 				type: 'string',
 				default: 'data',
 				description: 'Name of the binary property to store the generated audio file\n\nDefault: "data". This allows you to reference the audio file in subsequent nodes.',
-			},
-			{
-				displayName: 'Emotion Preset (ssfm-v21)',
-				name: 'emotionPresetV21',
-				type: 'options',
-				displayOptions: {
-					show: {
-						'/model': ['ssfm-v21'],
-					},
-				},
-				options: [
-					{
-						name: 'Normal',
-						value: 'normal',
-						description: 'Neutral, standard tone',
-					},
-					{
-						name: 'Happy',
-						value: 'happy',
-						description: 'Joyful, cheerful expression',
-					},
-					{
-						name: 'Sad',
-						value: 'sad',
-						description: 'Melancholic, somber tone',
-					},
-					{
-						name: 'Angry',
-						value: 'angry',
-						description: 'Intense, forceful expression',
-					},
-					{
-						name: 'Whisper',
-						value: 'whisper',
-						description: 'Soft, intimate speaking style',
-					},
-					{
-						name: 'Tone Up',
-						value: 'toneup',
-						description: 'Energetic, upbeat delivery',
-					},
-					{
-						name: 'Tone Down',
-						value: 'tonedown',
-						description: 'Calm, subdued delivery',
-					},
-				],
-				default: 'normal',
-				description: 'Emotion preset for ssfm-v21 model\n\nUses the legacy prompt format without Smart Emotion support.',
-			},
-			{
-				displayName: 'Emotion Intensity (ssfm-v21)',
-				name: 'emotionIntensityV21',
-				type: 'number',
-				displayOptions: {
-					show: {
-						'/model': ['ssfm-v21'],
-					},
-				},
-				typeOptions: {
-					minValue: 0,
-					maxValue: 2,
-					numberPrecision: 1,
-				},
-				default: 1,
-				description: 'Controls the strength of emotional expression for ssfm-v21 (0.0 - 2.0)\n\n0.0 (neutral) to 2.0 (maximum intensity). Default: 1.0 (standard).',
 			},
 			{
 				displayName: 'Language',
