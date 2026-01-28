@@ -69,17 +69,17 @@ export const voiceDescription: INodeProperties[] = [
         type: 'options',
         options: [
           {
-            name: 'Male',
-            value: 'male',
-            description: 'Male voice',
-          },
-          {
             name: 'Female',
             value: 'female',
             description: 'Female voice',
           },
+          {
+            name: 'Male',
+            value: 'male',
+            description: 'Male voice',
+          },
         ],
-        default: '',
+        default: 'female',
         description: 'Filter voices by gender',
       },
       {
@@ -93,6 +93,16 @@ export const voiceDescription: INodeProperties[] = [
             description: 'Child voice (under 12 years old)',
           },
           {
+            name: 'Elder',
+            value: 'elder',
+            description: 'Elder voice (over 60 years old)',
+          },
+          {
+            name: 'Middle Age',
+            value: 'middle_age',
+            description: 'Middle-aged voice (36-60 years old)',
+          },
+          {
             name: 'Teenager',
             value: 'teenager',
             description: 'Teenage voice (13-19 years old)',
@@ -102,18 +112,8 @@ export const voiceDescription: INodeProperties[] = [
             value: 'young_adult',
             description: 'Young adult voice (20-35 years old)',
           },
-          {
-            name: 'Middle Age',
-            value: 'middle_age',
-            description: 'Middle-aged voice (36-60 years old)',
-          },
-          {
-            name: 'Elder',
-            value: 'elder',
-            description: 'Elder voice (over 60 years old)',
-          },
         ],
-        default: '',
+        default: 'child',
         description: 'Filter voices by age group',
       },
       {
@@ -122,14 +122,19 @@ export const voiceDescription: INodeProperties[] = [
         type: 'options',
         options: [
           {
-            name: 'Announcer',
-            value: 'Announcer',
-            description: 'Public announcements and presentations',
+            name: 'Ads',
+            value: 'Ads',
+            description: 'Advertising and promotional content',
           },
           {
             name: 'Anime',
             value: 'Anime',
             description: 'Animation and character voices',
+          },
+          {
+            name: 'Announcer',
+            value: 'Announcer',
+            description: 'Public announcements and presentations',
           },
           {
             name: 'Audiobook',
@@ -147,24 +152,14 @@ export const voiceDescription: INodeProperties[] = [
             description: 'Documentary narration and commentary',
           },
           {
-            name: 'E-learning',
+            name: 'E-Learning',
             value: 'E-learning',
             description: 'Educational content and tutorials',
-          },
-          {
-            name: 'Rapper',
-            value: 'Rapper',
-            description: 'Rap and music performance',
           },
           {
             name: 'Game',
             value: 'Game',
             description: 'Video game characters and narration',
-          },
-          {
-            name: 'TikTok/Reels',
-            value: 'Tiktok/Reels',
-            description: 'Short-form social media content',
           },
           {
             name: 'News',
@@ -177,17 +172,22 @@ export const voiceDescription: INodeProperties[] = [
             description: 'Broadcasting and podcast production',
           },
           {
+            name: 'Rapper',
+            value: 'Rapper',
+            description: 'Rap and music performance',
+          },
+          {
+            name: 'TikTok/Reels',
+            value: 'Tiktok/Reels',
+            description: 'Short-form social media content',
+          },
+          {
             name: 'Voicemail',
             value: 'Voicemail',
             description: 'IVR systems and voice assistants',
           },
-          {
-            name: 'Ads',
-            value: 'Ads',
-            description: 'Advertising and promotional content',
-          },
         ],
-        default: '',
+        default: 'Announcer',
         description: 'Filter voices by use case category',
       },
     ],

@@ -38,7 +38,7 @@ export const speechDescription: INodeProperties[] = [
       },
     },
     default: { mode: 'list', value: '' },
-    // eslint-disable-next-line n8n-nodes-base/node-param-description-miscased-id
+
     description: 'Select a voice from the list or enter a Voice ID directly',
     modes: [
       {
@@ -83,7 +83,7 @@ export const speechDescription: INodeProperties[] = [
       rows: 4,
     },
     description:
-      'Text to convert to speech (1-2000 characters)\n\nCredits consumed based on text length. Supports multiple languages including English, Korean, Japanese, and Chinese. Special characters and punctuation are handled automatically.',
+      'Text to convert to speech (1-2000 characters) Credits consumed based on text length. Supports multiple languages including English, Korean, Japanese, and Chinese. Special characters and punctuation are handled automatically.',
     placeholder: "Everything is so incredibly perfect that I feel like I'm dreaming.",
   },
   {
@@ -112,7 +112,7 @@ export const speechDescription: INodeProperties[] = [
     ],
     default: 'ssfm-v30',
     description:
-      'Voice model to use for speech synthesis\n\nssfm-v30 is recommended for best quality and Smart Emotion features.',
+      'Voice model to use for speech synthesis ssfm-v30 is recommended for best quality and Smart Emotion features',
   },
   {
     displayName: 'Emotion Type',
@@ -127,7 +127,7 @@ export const speechDescription: INodeProperties[] = [
     },
     options: [
       {
-        name: 'Smart (Auto-detect from Context)',
+        name: 'Smart (Auto-Detect From Context)',
         value: 'smart',
         description:
           'AI automatically infers emotion from text context - best for dialogue and storytelling',
@@ -140,7 +140,7 @@ export const speechDescription: INodeProperties[] = [
     ],
     default: 'smart',
     description:
-      'How to control emotional expression (ssfm-v30 only)\n\nSmart: AI detects emotion automatically from context. Preset: Manual selection with 7 emotion options.',
+      'How to control emotional expression (ssfm-v30 only) Smart: AI detects emotion automatically from context. Preset: Manual selection with 7 emotion options.',
   },
   {
     displayName: 'Previous Text',
@@ -159,7 +159,7 @@ export const speechDescription: INodeProperties[] = [
       rows: 2,
     },
     description:
-      'Text that comes BEFORE the main text\n\nProvides context for AI to infer appropriate emotion. Optional but helps improve emotional accuracy (max 2000 characters).',
+      'Text that comes BEFORE the main text Provides context for AI to infer appropriate emotion. Optional but helps improve emotional accuracy (max 2000 characters).',
     placeholder: "I feel like I'm walking on air and I just want to scream with joy!",
   },
   {
@@ -179,7 +179,7 @@ export const speechDescription: INodeProperties[] = [
       rows: 2,
     },
     description:
-      'Text that comes AFTER the main text\n\nProvides context for AI to infer appropriate emotion. Optional but helps improve emotional accuracy (max 2000 characters).',
+      'Text that comes AFTER the main text Provides context for AI to infer appropriate emotion. Optional but helps improve emotional accuracy (max 2000 characters).',
     placeholder: 'I am literally bursting with happiness and I never want this feeling to end!',
   },
   {
@@ -196,9 +196,9 @@ export const speechDescription: INodeProperties[] = [
     },
     options: [
       {
-        name: 'Normal',
-        value: 'normal',
-        description: 'Neutral, standard tone',
+        name: 'Angry',
+        value: 'angry',
+        description: 'Intense, forceful expression',
       },
       {
         name: 'Happy',
@@ -206,19 +206,19 @@ export const speechDescription: INodeProperties[] = [
         description: 'Joyful, cheerful expression',
       },
       {
+        name: 'Normal',
+        value: 'normal',
+        description: 'Neutral, standard tone',
+      },
+      {
         name: 'Sad',
         value: 'sad',
         description: 'Melancholic, somber tone',
       },
       {
-        name: 'Angry',
-        value: 'angry',
-        description: 'Intense, forceful expression',
-      },
-      {
-        name: 'Whisper',
-        value: 'whisper',
-        description: 'Soft, intimate speaking style',
+        name: 'Tone Down',
+        value: 'tonedown',
+        description: 'Calm, subdued delivery',
       },
       {
         name: 'Tone Up',
@@ -226,14 +226,14 @@ export const speechDescription: INodeProperties[] = [
         description: 'Energetic, upbeat delivery',
       },
       {
-        name: 'Tone Down',
-        value: 'tonedown',
-        description: 'Calm, subdued delivery',
+        name: 'Whisper',
+        value: 'whisper',
+        description: 'Soft, intimate speaking style',
       },
     ],
     default: 'normal',
     description:
-      'Emotion preset to apply to the generated speech\n\nAll 7 emotions are available across all voices. Check specific voice characteristics via the Voices resource.',
+      'Emotion preset to apply to the generated speech All 7 emotions are available across all voices. Check specific voice characteristics via the Voices resource.',
   },
   {
     displayName: 'Emotion Intensity',
@@ -254,7 +254,7 @@ export const speechDescription: INodeProperties[] = [
     },
     default: 1,
     description:
-      'Controls the strength of emotional expression (0.0 - 2.0)\n\n0.0=completely neutral (no emotion), 0.5=subtle hints, 1.0=standard expression (default), 1.5=strong emphasis, 2.0=maximum intensity (highly expressive).',
+      'Controls the strength of emotional expression (0.0 - 2.0) 0.0=completely neutral (no emotion), 0.5=subtle hints, 1.0=standard expression (default), 1.5=strong emphasis, 2.0=maximum intensity (highly expressive)',
   },
   // ----------------------------------
   //         ssfm-v21 Emotion Settings
@@ -294,7 +294,7 @@ export const speechDescription: INodeProperties[] = [
     ],
     default: 'normal',
     description:
-      'Emotion preset to apply (ssfm-v21)\n\nSupported emotions: normal, happy, sad, angry. Check available emotions for each voice through the /voices API.',
+      'Emotion preset to apply (ssfm-v21) Supported emotions: normal, happy, sad, angry. Check available emotions for each voice through the /voices API.',
   },
   {
     displayName: 'Emotion Intensity',
@@ -314,7 +314,7 @@ export const speechDescription: INodeProperties[] = [
     },
     default: 1,
     description:
-      'Controls the strength of emotional expression (0.0 - 2.0)\n\n0.0=completely neutral, 1.0=standard expression (default), 2.0=maximum intensity.',
+      'Controls the strength of emotional expression (0.0 - 2.0) 0.0=completely neutral, 1.0=standard expression (default), 2.0=maximum intensity',
   },
   {
     displayName: 'Additional Options',
@@ -348,7 +348,7 @@ export const speechDescription: INodeProperties[] = [
         ],
         default: 'wav',
         description:
-          'Output audio format\n\nWAV: uncompressed 16-bit PCM, mono, 44.1kHz. MP3: 320 kbps, mono, 44.1kHz.',
+          'Output audio format WAV: uncompressed 16-bit PCM, mono, 44.1kHz. MP3: 320 kbps, mono, 44.1kHz.',
       },
       {
         displayName: 'Audio Pitch',
@@ -360,7 +360,7 @@ export const speechDescription: INodeProperties[] = [
         },
         default: 0,
         description:
-          'Pitch adjustment in semitones (-12 to +12)\n\n-12 (one octave down) to +12 (one octave up). Default: 0 (no adjustment).',
+          'Pitch adjustment in semitones (-12 to +12) -12 (one octave down) to +12 (one octave up). Default: 0 (no adjustment).',
       },
       {
         displayName: 'Audio Tempo',
@@ -373,7 +373,7 @@ export const speechDescription: INodeProperties[] = [
         },
         default: 1,
         description:
-          'Speed of speech playback (0.5x to 2.0x)\n\n0.5x (half speed) to 2.0x (double speed). Default: 1.0 (normal speed).',
+          'Speed of speech playback (0.5x to 2.0x) 0.5x (half speed) to 2.0x (double speed). Default: 1.0 (normal speed).',
       },
       {
         displayName: 'Binary Property',
@@ -381,7 +381,7 @@ export const speechDescription: INodeProperties[] = [
         type: 'string',
         default: 'data',
         description:
-          'Name of the binary property to store the generated audio file\n\nDefault: "data" (recommended for most cases). Use this name to reference the audio in subsequent nodes (e.g., Save to File, Send Email).\n\nOnly change if you need to handle multiple audio files in the same workflow (e.g., "narration", "background_music").',
+          'Name of the binary property to store the generated audio file Default: "data" (recommended for most cases). Use this name to reference the audio in subsequent nodes (e.g., Save to File, Send Email). Only change if you need to handle multiple audio files in the same workflow (e.g., "narration", "background_music").',
       },
       {
         displayName: 'Language',
@@ -389,12 +389,12 @@ export const speechDescription: INodeProperties[] = [
         type: 'options',
         options: [
           {
-            name: 'Auto-Detect',
-            value: '',
-          },
-          {
             name: 'Arabic',
             value: 'ara',
+          },
+          {
+            name: 'Auto-Detect',
+            value: '',
           },
           {
             name: 'Bengali',
@@ -543,7 +543,7 @@ export const speechDescription: INodeProperties[] = [
         ],
         default: '',
         description:
-          'Language code following ISO 639-3 standard\n\nCase-insensitive (both "ENG" and "eng" are accepted). If not provided, language will be auto-detected based on text content. ssfm-v30 supports 37 languages, ssfm-v21 supports 27 languages.',
+          'Language code following ISO 639-3 standard Case-insensitive (both "ENG" and "eng" are accepted). If not provided, language will be auto-detected based on text content. ssfm-v30 supports 37 languages, ssfm-v21 supports 27 languages.',
       },
       {
         displayName: 'Seed',
@@ -551,7 +551,7 @@ export const speechDescription: INodeProperties[] = [
         type: 'number',
         default: 42,
         description:
-          'Random seed for controlling speech generation variations\n\nUse any integer value. Using the same seed with identical parameters will produce consistent results, useful for reproducibility.',
+          'Random seed for controlling speech generation variations Use any integer value. Using the same seed with identical parameters will produce consistent results, useful for reproducibility.',
       },
       {
         displayName: 'Volume',
@@ -563,7 +563,7 @@ export const speechDescription: INodeProperties[] = [
         },
         default: 100,
         description:
-          'Audio output volume level (0 - 200)\n\n0 (silent) to 200 (maximum). Default: 100 (normal volume). Values above 100 may cause distortion.',
+          'Audio output volume level (0 - 200) 0 (silent) to 200 (maximum). Default: 100 (normal volume). Values above 100 may cause distortion.',
       },
     ],
   },

@@ -174,7 +174,7 @@ export class Typecast implements INodeType {
               description: 'Use "By ID" mode to enter Voice ID directly',
             },
             {
-              name: '💡 Switch to "By ID" mode to enter Voice ID manually',
+              name: '💡 Switch to "By ID" Mode to Enter Voice ID Manually',
               value: '',
               description: 'Click the dropdown on the left and select "By ID"',
             },

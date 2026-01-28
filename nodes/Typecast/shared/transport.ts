@@ -25,10 +25,16 @@ export async function typecastApiRequest(
 
   try {
     return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
-  } catch (error: any) {
-    const errorMessage = error.message || 'Unknown error';
-    const statusCode = error.httpCode;
-    const errorCode = error.errorResponse?.error_code || error.error_code;
+  } catch (error) {
+    const errorData = error as {
+      message?: string;
+      httpCode?: number;
+      errorResponse?: { error_code?: string };
+      error_code?: string;
+    };
+    const errorMessage = errorData.message || 'Unknown error';
+    const statusCode = errorData.httpCode;
+    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
 
     const statusDetails = statusCode ? `[${statusCode}] ` : '';
     const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
@@ -57,10 +63,16 @@ export async function typecastApiRequestBinary(
 
   try {
     return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
-  } catch (error: any) {
-    const errorMessage = error.message || 'Unknown error';
-    const statusCode = error.httpCode;
-    const errorCode = error.errorResponse?.error_code || error.error_code;
+  } catch (error) {
+    const errorData = error as {
+      message?: string;
+      httpCode?: number;
+      errorResponse?: { error_code?: string };
+      error_code?: string;
+    };
+    const errorMessage = errorData.message || 'Unknown error';
+    const statusCode = errorData.httpCode;
+    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
 
     const statusDetails = statusCode ? `[${statusCode}] ` : '';
     const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
