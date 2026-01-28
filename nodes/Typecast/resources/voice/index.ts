@@ -15,38 +15,13 @@ export const voiceDescription: INodeProperties[] = [
     },
     options: [
       {
-        name: 'Get',
-        value: 'get',
-        description: 'Get details of a specific voice model',
-        action: 'Get a voice',
-      },
-      {
-        name: 'Get Many',
+        name: 'Get All Voices',
         value: 'getMany',
         description: 'Get all available voice models',
         action: 'Get all voices',
       },
     ],
     default: 'getMany',
-  },
-  // ----------------------------------
-  //         voice:get
-  // ----------------------------------
-  {
-    displayName: 'Voice ID',
-    name: 'voiceId',
-    type: 'string',
-    required: true,
-    displayOptions: {
-      show: {
-        resource: ['voice'],
-        operation: ['get'],
-      },
-    },
-    default: 'tc_60e5426de8b95f1d3000d7b5',
-    description:
-      "Voice ID in format 'tc_' followed by a unique identifier\n\nCase-sensitive: must use lowercase (tc_xxx). Example: 'tc_60e5426de8b95f1d3000d7b5'. Use \"Get Many\" to see all available voice IDs.\n\nV2 API returns enhanced metadata including all supported models with their emotions, gender, age, and use cases.",
-    placeholder: 'tc_60e5426de8b95f1d3000d7b5',
   },
   // ----------------------------------
   //         voice:getMany

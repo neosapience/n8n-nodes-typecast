@@ -223,26 +223,6 @@ export class Typecast implements INodeType {
               }),
             );
           }
-
-          // ----------------------------------
-          //         voice:get
-          // ----------------------------------
-          if (operation === 'get') {
-            const voiceId = this.getNodeParameter('voiceId', i) as string;
-            const response = await typecastApiRequest.call(
-              this,
-              'GET',
-              `/voices/${voiceId}`,
-              {},
-              {},
-              'v2',
-            );
-            returnData.push(
-              ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
-                itemData: { item: i },
-              }),
-            );
-          }
         }
 
         if (resource === 'speech') {
