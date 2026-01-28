@@ -23,7 +23,7 @@ export class Typecast implements INodeType {
     version: 1,
     subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
     description: 'Interact with Typecast TTS API',
-    documentationUrl: 'https://typecast.ai/docs/bestpractice/n8n',
+    documentationUrl: 'https://typecast.ai/docs/integrations/n8n',
     usableAsTool: true,
     defaults: {
       name: 'Typecast',
@@ -73,7 +73,7 @@ export class Typecast implements INodeType {
           // Get the selected model to filter voices
           const model = (this.getNodeParameter('model', 0) as string) || 'ssfm-v30';
           const qs: IDataObject = {};
-          
+
           // Add model filter to query string
           if (model) {
             qs.model = model;
