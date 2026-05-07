@@ -344,10 +344,23 @@ export class Typecast implements INodeType {
               body.prompt = prompt;
             }
 
-            // Add output settings
+            // Add output settings (target_lufs is mutually exclusive with volume)
             const output: IDataObject = {};
-            if (additionalOptions.volume !== undefined) {
-              output.volume = additionalOptions.volume;
+            const targetLufs = additionalOptions.targetLufs;
+            const volumeOpt = additionalOptions.volume;
+            if (
+              targetLufs !== undefined &&
+              volumeOpt !== undefined &&
+              volumeOpt !== 100
+            ) {
+              throw new Error(
+                'target_lufs is mutually exclusive with a custom volume; leave Volume unset (default 100) or unset Target LUFS.',
+              );
+            }
+            if (targetLufs !== undefined) {
+              output.target_lufs = targetLufs;
+            } else if (volumeOpt !== undefined) {
+              output.volume = volumeOpt;
             }
             if (additionalOptions.audioPitch !== undefined) {
               output.audio_pitch = additionalOptions.audioPitch;

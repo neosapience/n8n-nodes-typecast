@@ -618,7 +618,20 @@ export const speechDescription: INodeProperties[] = [
         },
         default: 100,
         description:
-          'Audio output volume level (0 - 200) 0 (silent) to 200 (maximum). Default: 100 (normal volume). Values above 100 may cause distortion.',
+          'Audio output volume level (0 - 200) 0 (silent) to 200 (maximum). Default: 100 (normal volume). Mutually exclusive with Target LUFS on the non-streaming endpoint, and not accepted at all by streaming TTS.',
+      },
+      {
+        displayName: 'Target LUFS',
+        name: 'targetLufs',
+        type: 'number',
+        typeOptions: {
+          minValue: -70,
+          maxValue: 0,
+          numberPrecision: 1,
+        },
+        default: -14,
+        description:
+          'Absolute loudness normalization target in LUFS (-70.0 to 0.0). Set when you want the server to normalize output loudness (e.g. -14 LUFS for podcast / streaming standards). Mutually exclusive with Volume on the non-streaming endpoint; not accepted at all by streaming TTS.',
       },
     ],
   },
