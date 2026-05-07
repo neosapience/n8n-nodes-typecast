@@ -25,7 +25,7 @@ export const speechDescription: INodeProperties[] = [
         value: 'textToSpeechStream',
         description:
           'Convert text to speech via the streaming endpoint for low-latency chunked audio delivery',
-        action: 'Convert text to speech (streaming)',
+        action: 'Convert text to speech streaming',
       },
       {
         name: 'Text to Speech with Timestamps',
@@ -345,7 +345,7 @@ export const speechDescription: INodeProperties[] = [
     },
     options: [
       {
-        name: 'Default (Server picks)',
+        name: 'Default (Server Picks)',
         value: '',
         description:
           'Use the server default (word). For jpn/zho text, prefer Character or Both instead.',
