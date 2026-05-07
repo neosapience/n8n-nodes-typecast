@@ -13,6 +13,7 @@ import { typecastApiRequest, typecastApiRequestBinary } from './shared/transport
 
 import { voiceDescription } from './resources/voice';
 import { speechDescription } from './resources/speech';
+import { subscriptionDescription } from './resources/subscription';
 
 export class Typecast implements INodeType {
   description: INodeTypeDescription = {
@@ -48,6 +49,10 @@ export class Typecast implements INodeType {
             value: 'speech',
           },
           {
+            name: 'Subscription',
+            value: 'subscription',
+          },
+          {
             name: 'Voice',
             value: 'voice',
           },
@@ -56,6 +61,7 @@ export class Typecast implements INodeType {
       },
       ...voiceDescription,
       ...speechDescription,
+      ...subscriptionDescription,
     ],
   };
 
@@ -236,6 +242,27 @@ export class Typecast implements INodeType {
               {},
               {},
               'v2',
+            );
+            returnData.push(
+              ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
+                itemData: { item: i },
+              }),
+            );
+          }
+        }
+
+        if (resource === 'subscription') {
+          // ----------------------------------
+          //       subscription:getMy
+          // ----------------------------------
+          if (operation === 'getMy') {
+            const response = await typecastApiRequest.call(
+              this,
+              'GET',
+              '/users/me/subscription',
+              {},
+              {},
+              'v1',
             );
             returnData.push(
               ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
