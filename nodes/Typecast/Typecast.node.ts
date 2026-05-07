@@ -395,6 +395,112 @@ export class Typecast implements INodeType {
 
             returnData.push(newItem);
           }
+
+          // ----------------------------------
+          //         speech:textToSpeechStream
+          // ----------------------------------
+          if (operation === 'textToSpeechStream') {
+            const voiceId = this.getNodeParameter('voiceId', i, '', {
+              extractValue: true,
+            }) as string;
+            const text = this.getNodeParameter('text', i) as string;
+            const model = this.getNodeParameter('model', i) as string;
+            const additionalOptions = this.getNodeParameter(
+              'additionalOptions',
+              i,
+              {},
+            ) as IDataObject;
+
+            const body: IDataObject = { voice_id: voiceId, text, model };
+
+            if (additionalOptions.language) {
+              body.language = additionalOptions.language;
+            }
+
+            // Build prompt (mirrors textToSpeech)
+            const prompt: IDataObject = {};
+            if (model === 'ssfm-v30') {
+              const emotionType = this.getNodeParameter('emotionType', i, 'preset') as string;
+              if (emotionType === 'smart') {
+                prompt.emotion_type = 'smart';
+                const previousText = this.getNodeParameter('previousText', i, '') as string;
+                const nextText = this.getNodeParameter('nextText', i, '') as string;
+                if (previousText) prompt.previous_text = previousText;
+                if (nextText) prompt.next_text = nextText;
+              } else {
+                prompt.emotion_type = 'preset';
+                prompt.emotion_preset = this.getNodeParameter(
+                  'emotionPreset',
+                  i,
+                  'normal',
+                ) as string;
+                prompt.emotion_intensity = this.getNodeParameter(
+                  'emotionIntensity',
+                  i,
+                  1,
+                ) as number;
+              }
+            } else {
+              if (additionalOptions.emotionPresetV21) {
+                prompt.emotion_preset = additionalOptions.emotionPresetV21;
+              }
+              if (additionalOptions.emotionIntensityV21 !== undefined) {
+                prompt.emotion_intensity = additionalOptions.emotionIntensityV21;
+              }
+            }
+            if (Object.keys(prompt).length > 0) {
+              body.prompt = prompt;
+            }
+
+            // Streaming output rejects volume and target_lufs at the server,
+            // so only audio_pitch / audio_tempo / audio_format are forwarded.
+            const output: IDataObject = {};
+            if (additionalOptions.audioPitch !== undefined) {
+              output.audio_pitch = additionalOptions.audioPitch;
+            }
+            if (additionalOptions.audioTempo !== undefined) {
+              output.audio_tempo = additionalOptions.audioTempo;
+            }
+            if (additionalOptions.audioFormat) {
+              output.audio_format = additionalOptions.audioFormat;
+            }
+            if (Object.keys(output).length > 0) {
+              body.output = output;
+            }
+
+            if (additionalOptions.seed !== undefined) {
+              body.seed = additionalOptions.seed;
+            }
+
+            const binaryProperty = (additionalOptions.binaryProperty as string) || 'data';
+            const audioFormat = (additionalOptions.audioFormat as string) || 'wav';
+            const mimeType = audioFormat === 'mp3' ? 'audio/mpeg' : 'audio/wav';
+
+            const response = await typecastApiRequestBinary.call(
+              this,
+              'POST',
+              '/text-to-speech/stream',
+              body,
+            );
+
+            const newItem: INodeExecutionData = {
+              json: {
+                voice_id: voiceId,
+                text,
+                model,
+                streaming: true,
+              },
+              binary: {
+                [binaryProperty]: await this.helpers.prepareBinaryData(
+                  response,
+                  `audio.${audioFormat}`,
+                  mimeType,
+                ),
+              },
+            };
+
+            returnData.push(newItem);
+          }
         }
       } catch (error) {
         if (this.continueOnFail()) {

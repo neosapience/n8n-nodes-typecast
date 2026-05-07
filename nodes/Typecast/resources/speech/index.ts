@@ -20,6 +20,20 @@ export const speechDescription: INodeProperties[] = [
         description: 'Convert text to speech using a specified voice',
         action: 'Convert text to speech',
       },
+      {
+        name: 'Text to Speech (Streaming)',
+        value: 'textToSpeechStream',
+        description:
+          'Convert text to speech via the streaming endpoint for low-latency chunked audio delivery',
+        action: 'Convert text to speech (streaming)',
+      },
+      {
+        name: 'Text to Speech with Timestamps',
+        value: 'textToSpeechWithTimestamps',
+        description:
+          'Convert text to speech and return word/character-level timestamp alignment for caption generation',
+        action: 'Convert text to speech with timestamps',
+      },
     ],
     default: 'textToSpeech',
   },
@@ -34,7 +48,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     default: { mode: 'list', value: '' },
@@ -75,7 +89,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     default: 'Hello! Welcome to Typecast text to speech. This is a sample voice generation.',
@@ -94,7 +108,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     options: [
@@ -121,7 +135,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
       },
     },
@@ -149,7 +163,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['smart'],
       },
@@ -169,7 +183,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['smart'],
       },
@@ -189,7 +203,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['preset'],
       },
@@ -242,7 +256,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['preset'],
       },
@@ -266,7 +280,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v21'],
       },
     },
@@ -303,7 +317,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v21'],
       },
     },
@@ -325,7 +339,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     options: [
