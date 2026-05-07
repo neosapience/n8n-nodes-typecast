@@ -1,5 +1,6 @@
 import {
   NodeConnectionTypes,
+  NodeOperationError,
   type IExecuteFunctions,
   type ILoadOptionsFunctions,
   type INodeExecutionData,
@@ -353,7 +354,8 @@ export class Typecast implements INodeType {
               volumeOpt !== undefined &&
               volumeOpt !== 100
             ) {
-              throw new Error(
+              throw new NodeOperationError(
+                this.getNode(),
                 'target_lufs is mutually exclusive with a custom volume; leave Volume unset (default 100) or unset Target LUFS.',
               );
             }
@@ -578,7 +580,8 @@ export class Typecast implements INodeType {
             const targetLufs = additionalOptions.targetLufs;
             const volume = additionalOptions.volume;
             if (targetLufs !== undefined && volume !== undefined && volume !== 100) {
-              throw new Error(
+              throw new NodeOperationError(
+                this.getNode(),
                 'target_lufs is mutually exclusive with a custom volume; leave volume at the default (100) or unset target_lufs.',
               );
             }
