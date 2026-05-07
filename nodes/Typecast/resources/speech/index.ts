@@ -330,6 +330,47 @@ export const speechDescription: INodeProperties[] = [
     description:
       'Controls the strength of emotional expression (0.0 - 2.0) 0.0=completely neutral, 1.0=standard expression (default), 2.0=maximum intensity',
   },
+  // ----------------------------------
+  //         speech:textToSpeechWithTimestamps — granularity
+  // ----------------------------------
+  {
+    displayName: 'Granularity',
+    name: 'granularity',
+    type: 'options',
+    displayOptions: {
+      show: {
+        resource: ['speech'],
+        operation: ['textToSpeechWithTimestamps'],
+      },
+    },
+    options: [
+      {
+        name: 'Default (Server picks)',
+        value: '',
+        description:
+          'Use the server default (word). For jpn/zho text, prefer Character or Both instead.',
+      },
+      {
+        name: 'Word',
+        value: 'word',
+        description: 'Word-level alignment only',
+      },
+      {
+        name: 'Character',
+        value: 'char',
+        description:
+          'Character-level alignment only. Required for non-whitespace languages (jpn, zho).',
+      },
+      {
+        name: 'Both',
+        value: 'both',
+        description: 'Return both word- and character-level alignment',
+      },
+    ],
+    default: '',
+    description:
+      'Alignment granularity. The server collapses an entire sentence into a single word segment for non-whitespace languages, so pick Character or Both for jpn/zho.',
+  },
   {
     displayName: 'Additional Options',
     name: 'additionalOptions',
