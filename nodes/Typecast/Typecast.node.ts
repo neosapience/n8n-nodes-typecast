@@ -331,13 +331,24 @@ export class Typecast implements INodeType {
                 prompt.emotion_intensity = emotionIntensity;
               }
             } else {
-              // ssfm-v21: Use legacy prompt format (no emotion_type field)
-              // For v21, emotion settings are in additionalOptions
-              if (additionalOptions.emotionPresetV21) {
-                prompt.emotion_preset = additionalOptions.emotionPresetV21;
+              // ssfm-v21: Use legacy prompt format (no emotion_type field).
+              // emotionPresetV21 / emotionIntensityV21 are top-level params on
+              // the speech operation, NOT inside additionalOptions.
+              const emotionPresetV21 = this.getNodeParameter(
+                'emotionPresetV21',
+                i,
+                'normal',
+              ) as string;
+              const emotionIntensityV21 = this.getNodeParameter(
+                'emotionIntensityV21',
+                i,
+                1,
+              ) as number;
+              if (emotionPresetV21) {
+                prompt.emotion_preset = emotionPresetV21;
               }
-              if (additionalOptions.emotionIntensityV21 !== undefined) {
-                prompt.emotion_intensity = additionalOptions.emotionIntensityV21;
+              if (emotionIntensityV21 !== undefined) {
+                prompt.emotion_intensity = emotionIntensityV21;
               }
             }
 
@@ -456,11 +467,21 @@ export class Typecast implements INodeType {
                 ) as number;
               }
             } else {
-              if (additionalOptions.emotionPresetV21) {
-                prompt.emotion_preset = additionalOptions.emotionPresetV21;
+              const emotionPresetV21 = this.getNodeParameter(
+                'emotionPresetV21',
+                i,
+                'normal',
+              ) as string;
+              const emotionIntensityV21 = this.getNodeParameter(
+                'emotionIntensityV21',
+                i,
+                1,
+              ) as number;
+              if (emotionPresetV21) {
+                prompt.emotion_preset = emotionPresetV21;
               }
-              if (additionalOptions.emotionIntensityV21 !== undefined) {
-                prompt.emotion_intensity = additionalOptions.emotionIntensityV21;
+              if (emotionIntensityV21 !== undefined) {
+                prompt.emotion_intensity = emotionIntensityV21;
               }
             }
             if (Object.keys(prompt).length > 0) {
@@ -563,11 +584,21 @@ export class Typecast implements INodeType {
                 ) as number;
               }
             } else {
-              if (additionalOptions.emotionPresetV21) {
-                prompt.emotion_preset = additionalOptions.emotionPresetV21;
+              const emotionPresetV21 = this.getNodeParameter(
+                'emotionPresetV21',
+                i,
+                'normal',
+              ) as string;
+              const emotionIntensityV21 = this.getNodeParameter(
+                'emotionIntensityV21',
+                i,
+                1,
+              ) as number;
+              if (emotionPresetV21) {
+                prompt.emotion_preset = emotionPresetV21;
               }
-              if (additionalOptions.emotionIntensityV21 !== undefined) {
-                prompt.emotion_intensity = additionalOptions.emotionIntensityV21;
+              if (emotionIntensityV21 !== undefined) {
+                prompt.emotion_intensity = emotionIntensityV21;
               }
             }
             if (Object.keys(prompt).length > 0) {
