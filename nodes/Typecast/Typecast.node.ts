@@ -624,12 +624,7 @@ export class Typecast implements INodeType {
             const binaryProperty = (additionalOptions.binaryProperty as string) || 'data';
 
             const audioB64 = (response.audio as string) || '';
-            // n8n nodes run inside the Node.js runtime where Buffer is a
-            // global. The package's tsconfig does not pull in @types/node,
-            // so we cast through unknown to avoid the missing type lookup.
-            const audioBuffer = (
-              globalThis as unknown as { Buffer: { from(input: string, encoding: string): unknown } }
-            ).Buffer.from(audioB64, 'base64');
+            const audioBuffer = Buffer.from(audioB64, 'base64');
 
             const newItem: INodeExecutionData = {
               json: {
