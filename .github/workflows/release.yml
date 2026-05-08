@@ -48,13 +48,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
       - name: Verify tag matches package version
         # Guards against a tag/package.json version drift: if someone pushes
         # `git tag v1.2.3` but package.json is still on 1.2.2, we want the
         # publish step to never run and the failure to surface immediately.
+        # Runs before `npm ci` so a mismatch fails fast without installing.
         run: |
           TAG_VERSION="${GITHUB_REF#refs/tags/v}"
           PKG_VERSION=$(node -p "require('./package.json').version")
@@ -63,6 +61,9 @@ jobs:
             echo "::error::tag $TAG_VERSION does not match package.json $PKG_VERSION"
             exit 1
           fi
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Lint
         run: npm run lint
