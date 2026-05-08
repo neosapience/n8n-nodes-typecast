@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-05-08
+
+### Internal
+
+- Releases are now published from a GitHub Actions workflow (`.github/workflows/release.yml`) on `v*` tag push, with an [npm provenance](https://docs.npmjs.com/generating-provenance-statements) attestation. Required by n8n's verified community node policy effective 2026-05-01 — verified nodes must come from a GitHub Actions publish, not from a local `npm publish`. The 1.1.0 publish was the last one done locally; from this version on the workflow takes over.
+- Workflow pins `actions/checkout` and `actions/setup-node` to immutable commit SHAs (with the `# v4` trailing comment so Dependabot can still propose updates), and runs a tag/`package.json` version-match check before installing dependencies so a mismatched tag push fails fast.
+
+No public-surface changes from 1.1.0. The Typecast node's operations, fields, and execute behavior are identical.
+
 ## [1.1.0] - 2026-05-08
 
 ### Added
