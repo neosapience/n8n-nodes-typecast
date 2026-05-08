@@ -1,0 +1,59 @@
+name: Release
+
+# Triggers an npm publish with provenance whenever a `v*` tag is pushed.
+# Required by n8n's verified community node policy (effective 2026-05-01):
+# verified nodes must be published from a GitHub Actions workflow with an
+# npm provenance statement, not from a local machine.
+#
+# Setup:
+# 1. In npmjs.com, generate a Granular Access Token (NOT a classic publish
+#    token) scoped to `@neosapience/n8n-nodes-typecast` with publish rights
+#    AND "OIDC publishing" enabled. See
+#    https://docs.npmjs.com/generating-provenance-statements for the exact
+#    settings.
+# 2. Add it to this repo's secrets as `NPM_TOKEN` (Settings → Secrets and
+#    variables → Actions → New repository secret).
+# 3. To release, bump the version in package.json + CHANGELOG, push to main,
+#    then `git tag v<version>` and `git push origin v<version>`. This
+#    workflow takes over from there.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  # id-token: write is required for npm to mint a provenance attestation
+  # via OIDC. Without this, `npm publish --provenance` falls back to a
+  # warning and verified-node submission will not pick up provenance.
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to npm with provenance
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
