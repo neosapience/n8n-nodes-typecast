@@ -6,5 +6,8 @@ dist/
 .idea/
 *.tsbuildinfo
 
-# npm credentials
-.npmrc
+# npm credentials — block per-user / per-host npmrc files that may carry
+# auth tokens, but allow the project-level .npmrc which only carries
+# non-secret install config (e.g. legacy-peer-deps).
+.npmrc.local
+.npmrc.user
