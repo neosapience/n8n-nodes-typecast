@@ -20,8 +20,32 @@ export const voiceDescription: INodeProperties[] = [
         description: 'Get all available voice models',
         action: 'Get all voices',
       },
+      {
+        name: 'Get Voice',
+        value: 'getOne',
+        description: 'Get detailed information about a single voice by ID',
+        action: 'Get a voice',
+      },
     ],
     default: 'getMany',
+  },
+  // ----------------------------------
+  //         voice:getOne
+  // ----------------------------------
+  {
+    displayName: 'Voice ID',
+    name: 'voiceId',
+    type: 'string',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['voice'],
+        operation: ['getOne'],
+      },
+    },
+    default: '',
+    placeholder: 'e.g., tc_672c5f5ce59fac2a48faeaee',
+    description: 'The voice ID to look up via the V2 voices endpoint',
   },
   // ----------------------------------
   //         voice:getMany

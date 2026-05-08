@@ -20,6 +20,20 @@ export const speechDescription: INodeProperties[] = [
         description: 'Convert text to speech using a specified voice',
         action: 'Convert text to speech',
       },
+      {
+        name: 'Text to Speech (Streaming)',
+        value: 'textToSpeechStream',
+        description:
+          'Convert text to speech via the streaming endpoint for low-latency chunked audio delivery',
+        action: 'Convert text to speech streaming',
+      },
+      {
+        name: 'Text to Speech with Timestamps',
+        value: 'textToSpeechWithTimestamps',
+        description:
+          'Convert text to speech and return word/character-level timestamp alignment for caption generation',
+        action: 'Convert text to speech with timestamps',
+      },
     ],
     default: 'textToSpeech',
   },
@@ -34,7 +48,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     default: { mode: 'list', value: '' },
@@ -75,7 +89,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     default: 'Hello! Welcome to Typecast text to speech. This is a sample voice generation.',
@@ -94,7 +108,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     options: [
@@ -121,7 +135,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
       },
     },
@@ -149,7 +163,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['smart'],
       },
@@ -169,7 +183,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['smart'],
       },
@@ -189,7 +203,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['preset'],
       },
@@ -242,7 +256,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v30'],
         emotionType: ['preset'],
       },
@@ -266,7 +280,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v21'],
       },
     },
@@ -303,7 +317,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
         model: ['ssfm-v21'],
       },
     },
@@ -316,6 +330,47 @@ export const speechDescription: INodeProperties[] = [
     description:
       'Controls the strength of emotional expression (0.0 - 2.0) 0.0=completely neutral, 1.0=standard expression (default), 2.0=maximum intensity',
   },
+  // ----------------------------------
+  //         speech:textToSpeechWithTimestamps — granularity
+  // ----------------------------------
+  {
+    displayName: 'Granularity',
+    name: 'granularity',
+    type: 'options',
+    displayOptions: {
+      show: {
+        resource: ['speech'],
+        operation: ['textToSpeechWithTimestamps'],
+      },
+    },
+    options: [
+      {
+        name: 'Default (Server Picks)',
+        value: '',
+        description:
+          'Use the server default (word). For jpn/zho text, prefer Character or Both instead.',
+      },
+      {
+        name: 'Word',
+        value: 'word',
+        description: 'Word-level alignment only',
+      },
+      {
+        name: 'Character',
+        value: 'char',
+        description:
+          'Character-level alignment only. Required for non-whitespace languages (jpn, zho).',
+      },
+      {
+        name: 'Both',
+        value: 'both',
+        description: 'Return both word- and character-level alignment',
+      },
+    ],
+    default: '',
+    description:
+      'Alignment granularity. The server collapses an entire sentence into a single word segment for non-whitespace languages, so pick Character or Both for jpn/zho.',
+  },
   {
     displayName: 'Additional Options',
     name: 'additionalOptions',
@@ -325,7 +380,7 @@ export const speechDescription: INodeProperties[] = [
     displayOptions: {
       show: {
         resource: ['speech'],
-        operation: ['textToSpeech'],
+        operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
       },
     },
     options: [
@@ -563,7 +618,20 @@ export const speechDescription: INodeProperties[] = [
         },
         default: 100,
         description:
-          'Audio output volume level (0 - 200) 0 (silent) to 200 (maximum). Default: 100 (normal volume). Values above 100 may cause distortion.',
+          'Audio output volume level (0 - 200) 0 (silent) to 200 (maximum). Default: 100 (normal volume). Mutually exclusive with Target LUFS on the non-streaming endpoint, and not accepted at all by streaming TTS.',
+      },
+      {
+        displayName: 'Target LUFS',
+        name: 'targetLufs',
+        type: 'number',
+        typeOptions: {
+          minValue: -70,
+          maxValue: 0,
+          numberPrecision: 1,
+        },
+        default: -14,
+        description:
+          'Absolute loudness normalization target in LUFS (-70.0 to 0.0). Set when you want the server to normalize output loudness (e.g. -14 LUFS for podcast / streaming standards). Mutually exclusive with Volume on the non-streaming endpoint; not accepted at all by streaming TTS.',
       },
     ],
   },

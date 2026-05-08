@@ -1,5 +1,6 @@
 import {
   NodeConnectionTypes,
+  NodeOperationError,
   type IExecuteFunctions,
   type ILoadOptionsFunctions,
   type INodeExecutionData,
@@ -13,6 +14,7 @@ import { typecastApiRequest, typecastApiRequestBinary } from './shared/transport
 
 import { voiceDescription } from './resources/voice';
 import { speechDescription } from './resources/speech';
+import { subscriptionDescription } from './resources/subscription';
 
 export class Typecast implements INodeType {
   description: INodeTypeDescription = {
@@ -48,6 +50,10 @@ export class Typecast implements INodeType {
             value: 'speech',
           },
           {
+            name: 'Subscription',
+            value: 'subscription',
+          },
+          {
             name: 'Voice',
             value: 'voice',
           },
@@ -56,6 +62,7 @@ export class Typecast implements INodeType {
       },
       ...voiceDescription,
       ...speechDescription,
+      ...subscriptionDescription,
     ],
   };
 
@@ -223,6 +230,47 @@ export class Typecast implements INodeType {
               }),
             );
           }
+
+          // ----------------------------------
+          //         voice:getOne
+          // ----------------------------------
+          if (operation === 'getOne') {
+            const voiceId = this.getNodeParameter('voiceId', i) as string;
+            const response = await typecastApiRequest.call(
+              this,
+              'GET',
+              `/voices/${encodeURIComponent(voiceId)}`,
+              {},
+              {},
+              'v2',
+            );
+            returnData.push(
+              ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
+                itemData: { item: i },
+              }),
+            );
+          }
+        }
+
+        if (resource === 'subscription') {
+          // ----------------------------------
+          //       subscription:getMy
+          // ----------------------------------
+          if (operation === 'getMy') {
+            const response = await typecastApiRequest.call(
+              this,
+              'GET',
+              '/users/me/subscription',
+              {},
+              {},
+              'v1',
+            );
+            returnData.push(
+              ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
+                itemData: { item: i },
+              }),
+            );
+          }
         }
 
         if (resource === 'speech') {
@@ -283,13 +331,24 @@ export class Typecast implements INodeType {
                 prompt.emotion_intensity = emotionIntensity;
               }
             } else {
-              // ssfm-v21: Use legacy prompt format (no emotion_type field)
-              // For v21, emotion settings are in additionalOptions
-              if (additionalOptions.emotionPresetV21) {
-                prompt.emotion_preset = additionalOptions.emotionPresetV21;
+              // ssfm-v21: Use legacy prompt format (no emotion_type field).
+              // emotionPresetV21 / emotionIntensityV21 are top-level params on
+              // the speech operation, NOT inside additionalOptions.
+              const emotionPresetV21 = this.getNodeParameter(
+                'emotionPresetV21',
+                i,
+                'normal',
+              ) as string;
+              const emotionIntensityV21 = this.getNodeParameter(
+                'emotionIntensityV21',
+                i,
+                1,
+              ) as number;
+              if (emotionPresetV21) {
+                prompt.emotion_preset = emotionPresetV21;
               }
-              if (additionalOptions.emotionIntensityV21 !== undefined) {
-                prompt.emotion_intensity = additionalOptions.emotionIntensityV21;
+              if (emotionIntensityV21 !== undefined) {
+                prompt.emotion_intensity = emotionIntensityV21;
               }
             }
 
@@ -297,10 +356,24 @@ export class Typecast implements INodeType {
               body.prompt = prompt;
             }
 
-            // Add output settings
+            // Add output settings (target_lufs is mutually exclusive with volume)
             const output: IDataObject = {};
-            if (additionalOptions.volume !== undefined) {
-              output.volume = additionalOptions.volume;
+            const targetLufs = additionalOptions.targetLufs;
+            const volumeOpt = additionalOptions.volume;
+            if (
+              targetLufs !== undefined &&
+              volumeOpt !== undefined &&
+              volumeOpt !== 100
+            ) {
+              throw new NodeOperationError(
+                this.getNode(),
+                'target_lufs is mutually exclusive with a custom volume; leave Volume unset (default 100) or unset Target LUFS.',
+              );
+            }
+            if (targetLufs !== undefined) {
+              output.target_lufs = targetLufs;
+            } else if (volumeOpt !== undefined) {
+              output.volume = volumeOpt;
             }
             if (additionalOptions.audioPitch !== undefined) {
               output.audio_pitch = additionalOptions.audioPitch;
@@ -340,6 +413,264 @@ export class Typecast implements INodeType {
               binary: {
                 [binaryProperty as string]: await this.helpers.prepareBinaryData(
                   response,
+                  `audio.${audioFormat}`,
+                  mimeType,
+                ),
+              },
+            };
+
+            returnData.push(newItem);
+          }
+
+          // ----------------------------------
+          //         speech:textToSpeechStream
+          // ----------------------------------
+          if (operation === 'textToSpeechStream') {
+            const voiceId = this.getNodeParameter('voiceId', i, '', {
+              extractValue: true,
+            }) as string;
+            const text = this.getNodeParameter('text', i) as string;
+            const model = this.getNodeParameter('model', i) as string;
+            const additionalOptions = this.getNodeParameter(
+              'additionalOptions',
+              i,
+              {},
+            ) as IDataObject;
+
+            const body: IDataObject = { voice_id: voiceId, text, model };
+
+            if (additionalOptions.language) {
+              body.language = additionalOptions.language;
+            }
+
+            // Build prompt (mirrors textToSpeech)
+            const prompt: IDataObject = {};
+            if (model === 'ssfm-v30') {
+              const emotionType = this.getNodeParameter('emotionType', i, 'preset') as string;
+              if (emotionType === 'smart') {
+                prompt.emotion_type = 'smart';
+                const previousText = this.getNodeParameter('previousText', i, '') as string;
+                const nextText = this.getNodeParameter('nextText', i, '') as string;
+                if (previousText) prompt.previous_text = previousText;
+                if (nextText) prompt.next_text = nextText;
+              } else {
+                prompt.emotion_type = 'preset';
+                prompt.emotion_preset = this.getNodeParameter(
+                  'emotionPreset',
+                  i,
+                  'normal',
+                ) as string;
+                prompt.emotion_intensity = this.getNodeParameter(
+                  'emotionIntensity',
+                  i,
+                  1,
+                ) as number;
+              }
+            } else {
+              const emotionPresetV21 = this.getNodeParameter(
+                'emotionPresetV21',
+                i,
+                'normal',
+              ) as string;
+              const emotionIntensityV21 = this.getNodeParameter(
+                'emotionIntensityV21',
+                i,
+                1,
+              ) as number;
+              if (emotionPresetV21) {
+                prompt.emotion_preset = emotionPresetV21;
+              }
+              if (emotionIntensityV21 !== undefined) {
+                prompt.emotion_intensity = emotionIntensityV21;
+              }
+            }
+            if (Object.keys(prompt).length > 0) {
+              body.prompt = prompt;
+            }
+
+            // Streaming output rejects volume and target_lufs at the server,
+            // so only audio_pitch / audio_tempo / audio_format are forwarded.
+            const output: IDataObject = {};
+            if (additionalOptions.audioPitch !== undefined) {
+              output.audio_pitch = additionalOptions.audioPitch;
+            }
+            if (additionalOptions.audioTempo !== undefined) {
+              output.audio_tempo = additionalOptions.audioTempo;
+            }
+            if (additionalOptions.audioFormat) {
+              output.audio_format = additionalOptions.audioFormat;
+            }
+            if (Object.keys(output).length > 0) {
+              body.output = output;
+            }
+
+            if (additionalOptions.seed !== undefined) {
+              body.seed = additionalOptions.seed;
+            }
+
+            const binaryProperty = (additionalOptions.binaryProperty as string) || 'data';
+            const audioFormat = (additionalOptions.audioFormat as string) || 'wav';
+            const mimeType = audioFormat === 'mp3' ? 'audio/mpeg' : 'audio/wav';
+
+            const response = await typecastApiRequestBinary.call(
+              this,
+              'POST',
+              '/text-to-speech/stream',
+              body,
+            );
+
+            const newItem: INodeExecutionData = {
+              json: {
+                voice_id: voiceId,
+                text,
+                model,
+                streaming: true,
+              },
+              binary: {
+                [binaryProperty]: await this.helpers.prepareBinaryData(
+                  response,
+                  `audio.${audioFormat}`,
+                  mimeType,
+                ),
+              },
+            };
+
+            returnData.push(newItem);
+          }
+
+          // ----------------------------------
+          //         speech:textToSpeechWithTimestamps
+          // ----------------------------------
+          if (operation === 'textToSpeechWithTimestamps') {
+            const voiceId = this.getNodeParameter('voiceId', i, '', {
+              extractValue: true,
+            }) as string;
+            const text = this.getNodeParameter('text', i) as string;
+            const model = this.getNodeParameter('model', i) as string;
+            const granularity = this.getNodeParameter('granularity', i, '') as string;
+            const additionalOptions = this.getNodeParameter(
+              'additionalOptions',
+              i,
+              {},
+            ) as IDataObject;
+
+            const body: IDataObject = { voice_id: voiceId, text, model };
+
+            if (additionalOptions.language) {
+              body.language = additionalOptions.language;
+            }
+
+            // Build prompt (mirrors textToSpeech)
+            const prompt: IDataObject = {};
+            if (model === 'ssfm-v30') {
+              const emotionType = this.getNodeParameter('emotionType', i, 'preset') as string;
+              if (emotionType === 'smart') {
+                prompt.emotion_type = 'smart';
+                const previousText = this.getNodeParameter('previousText', i, '') as string;
+                const nextText = this.getNodeParameter('nextText', i, '') as string;
+                if (previousText) prompt.previous_text = previousText;
+                if (nextText) prompt.next_text = nextText;
+              } else {
+                prompt.emotion_type = 'preset';
+                prompt.emotion_preset = this.getNodeParameter(
+                  'emotionPreset',
+                  i,
+                  'normal',
+                ) as string;
+                prompt.emotion_intensity = this.getNodeParameter(
+                  'emotionIntensity',
+                  i,
+                  1,
+                ) as number;
+              }
+            } else {
+              const emotionPresetV21 = this.getNodeParameter(
+                'emotionPresetV21',
+                i,
+                'normal',
+              ) as string;
+              const emotionIntensityV21 = this.getNodeParameter(
+                'emotionIntensityV21',
+                i,
+                1,
+              ) as number;
+              if (emotionPresetV21) {
+                prompt.emotion_preset = emotionPresetV21;
+              }
+              if (emotionIntensityV21 !== undefined) {
+                prompt.emotion_intensity = emotionIntensityV21;
+              }
+            }
+            if (Object.keys(prompt).length > 0) {
+              body.prompt = prompt;
+            }
+
+            // with-timestamps accepts the same Output object as textToSpeech.
+            // Volume and target_lufs are mutually exclusive at the server.
+            const output: IDataObject = {};
+            const targetLufs = additionalOptions.targetLufs;
+            const volume = additionalOptions.volume;
+            if (targetLufs !== undefined && volume !== undefined && volume !== 100) {
+              throw new NodeOperationError(
+                this.getNode(),
+                'target_lufs is mutually exclusive with a custom volume; leave volume at the default (100) or unset target_lufs.',
+              );
+            }
+            if (targetLufs !== undefined) {
+              output.target_lufs = targetLufs;
+            } else if (volume !== undefined) {
+              output.volume = volume;
+            }
+            if (additionalOptions.audioPitch !== undefined) {
+              output.audio_pitch = additionalOptions.audioPitch;
+            }
+            if (additionalOptions.audioTempo !== undefined) {
+              output.audio_tempo = additionalOptions.audioTempo;
+            }
+            if (additionalOptions.audioFormat) {
+              output.audio_format = additionalOptions.audioFormat;
+            }
+            if (Object.keys(output).length > 0) {
+              body.output = output;
+            }
+
+            if (additionalOptions.seed !== undefined) {
+              body.seed = additionalOptions.seed;
+            }
+
+            const qs: IDataObject = {};
+            if (granularity) qs.granularity = granularity;
+
+            const response = (await typecastApiRequest.call(
+              this,
+              'POST',
+              '/text-to-speech/with-timestamps',
+              body,
+              qs,
+              'v1',
+            )) as IDataObject;
+
+            const audioFormat = (additionalOptions.audioFormat as string) || 'wav';
+            const mimeType = audioFormat === 'mp3' ? 'audio/mpeg' : 'audio/wav';
+            const binaryProperty = (additionalOptions.binaryProperty as string) || 'data';
+
+            const audioB64 = (response.audio as string) || '';
+            const audioBuffer = Buffer.from(audioB64, 'base64');
+
+            const newItem: INodeExecutionData = {
+              json: {
+                voice_id: voiceId,
+                text,
+                model,
+                granularity: granularity || null,
+                audio_format: response.audio_format,
+                audio_duration: response.audio_duration,
+                words: response.words ?? null,
+                characters: response.characters ?? null,
+              },
+              binary: {
+                [binaryProperty]: await this.helpers.prepareBinaryData(
+                  audioBuffer,
                   `audio.${audioFormat}`,
                   mimeType,
                 ),

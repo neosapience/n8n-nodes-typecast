@@ -8,17 +8,25 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 ## Features
 
 - **Voice Resource**
-  - Get All Voices: List all available voice models
+  - Get All Voices: list voices with `model` / `gender` / `age` / `use_case` filters
+  - Get Voice: look up a single voice by ID via the V2 API
 - **Speech Resource**
-  - Text to Speech: Convert text to speech using a selected voice
+  - Text to Speech: convert text to speech using a selected voice
+  - Text to Speech (Streaming): low-latency chunked audio via `POST /v1/text-to-speech/stream`
+  - Text to Speech with Timestamps: audio + word / character alignment for SRT / WebVTT caption generation
+- **Subscription Resource**
+  - Get My Subscription: plan tier, credit usage, and concurrency limit at runtime
+- **Output controls**
+  - `target_lufs`: absolute loudness normalization (`-70.0 ~ 0.0` LUFS); mutually exclusive with Volume on the non-streaming endpoint
 
 ## Node Structure
 
 - Node: `Typecast`
-  - Resources: `voice`, `speech`
+  - Resources: `voice`, `speech`, `subscription`
   - Operations:
-    - `voice`: `getMany`
-    - `speech`: `textToSpeech`
+    - `voice`: `getMany`, `getOne`
+    - `speech`: `textToSpeech`, `textToSpeechStream`, `textToSpeechWithTimestamps`
+    - `subscription`: `getMy`
 
 ## Credentials Setup
 
