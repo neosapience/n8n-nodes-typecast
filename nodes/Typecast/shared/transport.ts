@@ -5,7 +5,42 @@ import type {
   IHttpRequestMethods,
   IDataObject,
   IHttpRequestOptions,
+  JsonObject,
 } from 'n8n-workflow';
+import { NodeApiError } from 'n8n-workflow';
+
+function throwTypecastApiError(
+  this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
+  error: unknown,
+  context: string,
+): never {
+  const errorData = error as {
+    message?: string;
+    httpCode?: number | string;
+    errorResponse?: { error_code?: string };
+    error_code?: string;
+  };
+  const errorMessage = errorData.message || 'Unknown error';
+  const statusCode = errorData.httpCode;
+  const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
+
+  const statusDetails = statusCode ? `[${statusCode}] ` : '';
+  const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
+  const message = `${context}: ${statusDetails}${errorCodeDetails}${errorMessage}`;
+
+  throw new NodeApiError(
+    this.getNode(),
+    {
+      message,
+      ...(statusCode ? { statusCode } : {}),
+      ...(errorCode ? { error_code: errorCode } : {}),
+    } as JsonObject,
+    {
+      message,
+      ...(statusCode ? { httpCode: String(statusCode) } : {}),
+    },
+  );
+}
 
 export async function typecastApiRequest(
   this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
@@ -26,20 +61,7 @@ export async function typecastApiRequest(
   try {
     return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
   } catch (error) {
-    const errorData = error as {
-      message?: string;
-      httpCode?: number;
-      errorResponse?: { error_code?: string };
-      error_code?: string;
-    };
-    const errorMessage = errorData.message || 'Unknown error';
-    const statusCode = errorData.httpCode;
-    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
-
-    const statusDetails = statusCode ? `[${statusCode}] ` : '';
-    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
-
-    throw new Error(`Typecast API request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
+    throwTypecastApiError.call(this, error, 'Typecast API request failed');
   }
 }
 
@@ -64,20 +86,7 @@ export async function typecastApiRequestBinary(
   try {
     return await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
   } catch (error) {
-    const errorData = error as {
-      message?: string;
-      httpCode?: number;
-      errorResponse?: { error_code?: string };
-      error_code?: string;
-    };
-    const errorMessage = errorData.message || 'Unknown error';
-    const statusCode = errorData.httpCode;
-    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
-
-    const statusDetails = statusCode ? `[${statusCode}] ` : '';
-    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
-
-    throw new Error(`Typecast API binary request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
+    throwTypecastApiError.call(this, error, 'Typecast API binary request failed');
   }
 }
 
@@ -104,20 +113,7 @@ export async function typecastApiRequestFormData(
     );
     return typeof response === 'string' ? JSON.parse(response) : response;
   } catch (error) {
-    const errorData = error as {
-      message?: string;
-      httpCode?: number;
-      errorResponse?: { error_code?: string };
-      error_code?: string;
-    };
-    const errorMessage = errorData.message || 'Unknown error';
-    const statusCode = errorData.httpCode;
-    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
-
-    const statusDetails = statusCode ? `[${statusCode}] ` : '';
-    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
-
-    throw new Error(`Typecast API multipart request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
+    throwTypecastApiError.call(this, error, 'Typecast API multipart request failed');
   }
 }
 
@@ -137,19 +133,6 @@ export async function typecastApiRequestNoContent(
   try {
     await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
   } catch (error) {
-    const errorData = error as {
-      message?: string;
-      httpCode?: number;
-      errorResponse?: { error_code?: string };
-      error_code?: string;
-    };
-    const errorMessage = errorData.message || 'Unknown error';
-    const statusCode = errorData.httpCode;
-    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
-
-    const statusDetails = statusCode ? `[${statusCode}] ` : '';
-    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
-
-    throw new Error(`Typecast API request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
+    throwTypecastApiError.call(this, error, 'Typecast API request failed');
   }
 }

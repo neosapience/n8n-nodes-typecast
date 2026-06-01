@@ -252,6 +252,7 @@ export class Typecast implements INodeType {
               throw new NodeOperationError(
                 this.getNode(),
                 `Voice Name must be 1-30 characters; got ${charCount}.`,
+                { itemIndex: i },
               );
             }
 
@@ -261,6 +262,7 @@ export class Typecast implements INodeType {
               throw new NodeOperationError(
                 this.getNode(),
                 `Audio file exceeds the 25 MB quick cloning limit; got ${audioBuffer.byteLength} bytes.`,
+                { itemIndex: i },
               );
             }
 
@@ -302,6 +304,7 @@ export class Typecast implements INodeType {
               throw new NodeOperationError(
                 this.getNode(),
                 `Cloned Voice ID must start with "uc_"; got ${voiceId}.`,
+                { itemIndex: i },
               );
             }
 
@@ -489,6 +492,7 @@ export class Typecast implements INodeType {
               throw new NodeOperationError(
                 this.getNode(),
                 'target_lufs is mutually exclusive with a custom volume; leave Volume unset (default 100) or unset Target LUFS.',
+                { itemIndex: i },
               );
             }
             if (targetLufs !== undefined) {
@@ -526,6 +530,7 @@ export class Typecast implements INodeType {
             );
 
             const newItem: INodeExecutionData = {
+              pairedItem: { item: i },
               json: {
                 voice_id: voiceId,
                 text,
@@ -641,6 +646,7 @@ export class Typecast implements INodeType {
             );
 
             const newItem: INodeExecutionData = {
+              pairedItem: { item: i },
               json: {
                 voice_id: voiceId,
                 text,
@@ -735,6 +741,7 @@ export class Typecast implements INodeType {
               throw new NodeOperationError(
                 this.getNode(),
                 'target_lufs is mutually exclusive with a custom volume; leave volume at the default (100) or unset target_lufs.',
+                { itemIndex: i },
               );
             }
             if (targetLufs !== undefined) {
@@ -779,6 +786,7 @@ export class Typecast implements INodeType {
             const audioBuffer = Buffer.from(audioB64, 'base64');
 
             const newItem: INodeExecutionData = {
+              pairedItem: { item: i },
               json: {
                 voice_id: voiceId,
                 text,
@@ -811,7 +819,7 @@ export class Typecast implements INodeType {
           });
           continue;
         }
-        throw error;
+        throw new NodeOperationError(this.getNode(), error as Error, { itemIndex: i });
       }
     }
 

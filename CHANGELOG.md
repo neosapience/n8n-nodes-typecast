@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.1] - 2026-06-01
+
+### Internal
+
+- Updated `@n8n/node-cli` to `^0.32.1`, aligning the package with n8n's current Creator Portal / verified community node guidance.
+- Adjusted execution errors and binary outputs to satisfy the current `n8n-node lint` community-node rules (`itemIndex` on operation errors, `pairedItem` on binary outputs, and `NodeApiError` for API failures).
+
+No public-surface changes from 1.2.0. The Typecast node's operations, fields, and quick cloning behavior are identical.
+
 ## [1.2.0] - 2026-06-01
 
 ### Added
