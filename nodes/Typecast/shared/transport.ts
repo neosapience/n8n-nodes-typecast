@@ -80,3 +80,76 @@ export async function typecastApiRequestBinary(
     throw new Error(`Typecast API binary request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
   }
 }
+
+export async function typecastApiRequestFormData(
+  this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
+  method: IHttpRequestMethods,
+  endpoint: string,
+  body: FormData,
+  qs: IDataObject = {},
+  version: string = 'v1',
+) {
+  const options: IHttpRequestOptions = {
+    method,
+    body,
+    qs,
+    url: `https://api.typecast.ai/${version}${endpoint}`,
+  };
+
+  try {
+    const response = await this.helpers.httpRequestWithAuthentication.call(
+      this,
+      'typecastApi',
+      options,
+    );
+    return typeof response === 'string' ? JSON.parse(response) : response;
+  } catch (error) {
+    const errorData = error as {
+      message?: string;
+      httpCode?: number;
+      errorResponse?: { error_code?: string };
+      error_code?: string;
+    };
+    const errorMessage = errorData.message || 'Unknown error';
+    const statusCode = errorData.httpCode;
+    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
+
+    const statusDetails = statusCode ? `[${statusCode}] ` : '';
+    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
+
+    throw new Error(`Typecast API multipart request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
+  }
+}
+
+export async function typecastApiRequestNoContent(
+  this: IExecuteFunctions | ILoadOptionsFunctions | IHookFunctions,
+  method: IHttpRequestMethods,
+  endpoint: string,
+  qs: IDataObject = {},
+  version: string = 'v1',
+): Promise<void> {
+  const options: IHttpRequestOptions = {
+    method,
+    qs,
+    url: `https://api.typecast.ai/${version}${endpoint}`,
+  };
+
+  try {
+    await this.helpers.httpRequestWithAuthentication.call(this, 'typecastApi', options);
+  } catch (error) {
+    const errorData = error as {
+      message?: string;
+      httpCode?: number;
+      errorResponse?: { error_code?: string };
+      error_code?: string;
+    };
+    const errorMessage = errorData.message || 'Unknown error';
+    const statusCode = errorData.httpCode;
+    const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
+
+    const statusDetails = statusCode ? `[${statusCode}] ` : '';
+    const errorCodeDetails = errorCode ? `(Error Code: ${errorCode}) ` : '';
+
+    throw new Error(`Typecast API request failed: ${statusDetails}${errorCodeDetails}${errorMessage}`);
+  }
+}

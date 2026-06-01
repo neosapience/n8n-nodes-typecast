@@ -8,6 +8,8 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 ## Features
 
 - **Voice Resource**
+  - Clone Voice: create a quick-cloned custom voice from a WAV or MP3 binary input
+  - Delete Cloned Voice: delete a quick-cloned voice by its `uc_...` voice ID
   - Get All Voices: list voices with `model` / `gender` / `age` / `use_case` filters
   - Get Voice: look up a single voice by ID via the V2 API
 - **Speech Resource**
@@ -24,7 +26,7 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 - Node: `Typecast`
   - Resources: `voice`, `speech`, `subscription`
   - Operations:
-    - `voice`: `getMany`, `getOne`
+    - `voice`: `clone`, `delete`, `getMany`, `getOne`
     - `speech`: `textToSpeech`, `textToSpeechStream`, `textToSpeechWithTimestamps`
     - `subscription`: `getMy`
 
@@ -40,6 +42,15 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 2. Select a resource and operation (e.g., Speech > Text to Speech)
 3. Provide required parameters (e.g., Voice ID, Text)
 4. Connect and run your workflow
+
+### Quick Cloning Example
+
+1. Add a node that outputs an audio file as binary data, such as **Read/Write Files from Disk** or an HTTP download node.
+2. Add **Typecast > Voice > Clone Voice**.
+3. Set **Audio Binary Property** to the binary property name from the previous node, usually `data`.
+4. Set **Voice Name** and **Model**, then run the node.
+5. Use the returned `voice_id` (`uc_...`) in a following **Typecast > Speech > Text to Speech** node by selecting Voice ID **By ID**.
+6. When the cloned voice is no longer needed, pass the same `uc_...` ID to **Typecast > Voice > Delete Cloned Voice**.
 
 ## Installation
 

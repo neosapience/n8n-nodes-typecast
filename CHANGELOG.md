@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-06-01
+
+### Added
+
+- **`voice:clone` operation** — create a quick-cloned custom voice via `POST /v1/voices/clone` from an incoming binary WAV or MP3 sample. The node validates the 1-30 character voice name and 25 MB audio limit locally, then uploads multipart form data with the selected SSFM model.
+- **`voice:delete` operation** — delete a quick-cloned custom voice via `DELETE /v1/voices/{voice_id}`. The node validates the `uc_` voice ID prefix before calling the API.
+
+### Changed
+
+- The speech `Voice ID` direct-entry mode now accepts both built-in Typecast voices (`tc_...`) and quick-cloned voices (`uc_...`), so a `Clone Voice` result can be passed directly into a following TTS node.
+- `Clone Voice` output now normalizes the handoff fields (`voice_id`, `cloned_voice_id`, `next_step_voice_id`, `next_step_model`) and rejects non-WAV/MP3 binary inputs before uploading.
+
 ## [1.1.1] - 2026-05-08
 
 ### Internal

@@ -3,6 +3,7 @@ import {
   NodeOperationError,
   type IExecuteFunctions,
   type ILoadOptionsFunctions,
+  type INode,
   type INodeExecutionData,
   type INodeListSearchResult,
   type INodeType,
@@ -10,11 +11,47 @@ import {
   type IDataObject,
 } from 'n8n-workflow';
 
-import { typecastApiRequest, typecastApiRequestBinary } from './shared/transport';
+import {
+  typecastApiRequest,
+  typecastApiRequestBinary,
+  typecastApiRequestFormData,
+  typecastApiRequestNoContent,
+} from './shared/transport';
 
 import { voiceDescription } from './resources/voice';
 import { speechDescription } from './resources/speech';
 import { subscriptionDescription } from './resources/subscription';
+
+const CLONING_MAX_FILE_SIZE = 25 * 1024 * 1024;
+
+function guessAudioMime(filename: string, fallback: string | undefined, node: INode): string {
+  const lower = filename.toLowerCase();
+  if (lower.endsWith('.wav')) return 'audio/wav';
+  if (lower.endsWith('.mp3')) return 'audio/mpeg';
+  if (fallback === 'audio/wav' || fallback === 'audio/mpeg') return fallback;
+  throw new NodeOperationError(
+    node,
+    'Quick cloning accepts WAV or MP3 audio only. Use a .wav or .mp3 file.',
+  );
+}
+
+function normalizeClonedVoiceResponse(response: IDataObject, fallbackName: string, fallbackModel: string) {
+  const payload = (response.result || response.data || response) as IDataObject;
+  const voiceId = (payload.voice_id || payload.voiceId) as string | undefined;
+  const voiceName = (payload.name || payload.voice_name || payload.voiceName || fallbackName) as string;
+  const model = (payload.model || fallbackModel) as string;
+
+  return {
+    ...payload,
+    voice_id: voiceId,
+    cloned_voice_id: voiceId,
+    voice_name: voiceName,
+    name: voiceName,
+    model,
+    next_step_voice_id: voiceId,
+    next_step_model: model,
+  };
+}
 
 export class Typecast implements INodeType {
   description: INodeTypeDescription = {
@@ -202,6 +239,90 @@ export class Typecast implements INodeType {
     for (let i = 0; i < items.length; i++) {
       try {
         if (resource === 'voice') {
+          // ----------------------------------
+          //         voice:clone
+          // ----------------------------------
+          if (operation === 'clone') {
+            const binaryProperty = this.getNodeParameter('binaryProperty', i) as string;
+            const name = this.getNodeParameter('name', i) as string;
+            const model = this.getNodeParameter('cloneModel', i) as string;
+
+            const charCount = Array.from(name).length;
+            if (charCount < 1 || charCount > 30) {
+              throw new NodeOperationError(
+                this.getNode(),
+                `Voice Name must be 1-30 characters; got ${charCount}.`,
+              );
+            }
+
+            const binaryData = this.helpers.assertBinaryData(i, binaryProperty);
+            const audioBuffer = await this.helpers.getBinaryDataBuffer(i, binaryProperty);
+            if (audioBuffer.byteLength > CLONING_MAX_FILE_SIZE) {
+              throw new NodeOperationError(
+                this.getNode(),
+                `Audio file exceeds the 25 MB quick cloning limit; got ${audioBuffer.byteLength} bytes.`,
+              );
+            }
+
+            const filename = binaryData.fileName || 'audio.wav';
+            const mimeType = guessAudioMime(filename, binaryData.mimeType, this.getNode());
+            const audioBytes = audioBuffer.buffer.slice(
+              audioBuffer.byteOffset,
+              audioBuffer.byteOffset + audioBuffer.byteLength,
+            ) as ArrayBuffer;
+
+            const form = new FormData();
+            form.append('name', name);
+            form.append('model', model);
+            form.append('file', new Blob([audioBytes], { type: mimeType }), filename);
+
+            const response = await typecastApiRequestFormData.call(
+              this,
+              'POST',
+              '/voices/clone',
+              form,
+              {},
+              'v1',
+            ) as IDataObject;
+            const clonedVoice = normalizeClonedVoiceResponse(response, name, model);
+
+            returnData.push(
+              ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(clonedVoice), {
+                itemData: { item: i },
+              }),
+            );
+          }
+
+          // ----------------------------------
+          //         voice:delete
+          // ----------------------------------
+          if (operation === 'delete') {
+            const voiceId = this.getNodeParameter('clonedVoiceId', i) as string;
+            if (!voiceId.startsWith('uc_')) {
+              throw new NodeOperationError(
+                this.getNode(),
+                `Cloned Voice ID must start with "uc_"; got ${voiceId}.`,
+              );
+            }
+
+            await typecastApiRequestNoContent.call(
+              this,
+              'DELETE',
+              `/voices/${encodeURIComponent(voiceId)}`,
+              {},
+              'v1',
+            );
+
+            returnData.push(
+              ...this.helpers.constructExecutionMetaData(
+                this.helpers.returnJsonArray({ success: true, voice_id: voiceId }),
+                {
+                  itemData: { item: i },
+                },
+              ),
+            );
+          }
+
           // ----------------------------------
           //         voice:getMany
           // ----------------------------------

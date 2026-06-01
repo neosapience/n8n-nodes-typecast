@@ -6,14 +6,14 @@ name: Release
 # npm provenance statement, not from a local machine.
 #
 # Setup:
-# 1. In npmjs.com, generate a Granular Access Token (NOT a classic publish
-#    token) scoped to `@neosapience/n8n-nodes-typecast` with publish rights
-#    AND "OIDC publishing" enabled. See
-#    https://docs.npmjs.com/generating-provenance-statements for the exact
-#    settings.
-# 2. Add it to this repo's secrets as `NPM_TOKEN` (Settings → Secrets and
-#    variables → Actions → New repository secret).
-# 3. To release, bump the version in package.json + CHANGELOG, push to main,
+# 1. In npmjs.com, configure a Trusted Publisher for
+#    `@neosapience/n8n-nodes-typecast`:
+#    - Publisher: GitHub Actions
+#    - Organization/user: neosapience
+#    - Repository: n8n-nodes-typecast
+#    - Workflow filename: release.yml
+#    - Environment: leave empty unless this workflow is later given one
+# 2. To release, bump the version in package.json + CHANGELOG, push to main,
 #    then `git tag v<version>` and `git push origin v<version>`. This
 #    workflow takes over from there.
 
@@ -73,5 +73,3 @@ jobs:
 
       - name: Publish to npm with provenance
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -15,6 +15,18 @@ export const voiceDescription: INodeProperties[] = [
     },
     options: [
       {
+        name: 'Clone Voice',
+        value: 'clone',
+        description: 'Create a quick-cloned custom voice from an audio sample',
+        action: 'Clone a voice',
+      },
+      {
+        name: 'Delete Cloned Voice',
+        value: 'delete',
+        description: 'Delete a quick-cloned custom voice by ID',
+        action: 'Delete a cloned voice',
+      },
+      {
         name: 'Get All Voices',
         value: 'getMany',
         description: 'Get all available voice models',
@@ -28,6 +40,84 @@ export const voiceDescription: INodeProperties[] = [
       },
     ],
     default: 'getMany',
+  },
+  // ----------------------------------
+  //         voice:clone
+  // ----------------------------------
+  {
+    displayName: 'Audio Binary Property',
+    name: 'binaryProperty',
+    type: 'string',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['voice'],
+        operation: ['clone'],
+      },
+    },
+    default: 'data',
+    description:
+      'Name of the incoming binary property that contains the audio sample, usually "data" from the previous file/download node. WAV and MP3 are supported; max 25 MB. The output voice_id can be used in Speech > Text to Speech > Voice ID > By ID.',
+  },
+  {
+    displayName: 'Voice Name',
+    name: 'name',
+    type: 'string',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['voice'],
+        operation: ['clone'],
+      },
+    },
+    default: '',
+    placeholder: 'e.g., My Cloned Voice',
+    description: 'Name for the cloned voice. Must be 1-30 characters.',
+  },
+  {
+    displayName: 'Model',
+    name: 'cloneModel',
+    type: 'options',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['voice'],
+        operation: ['clone'],
+      },
+    },
+    options: [
+      {
+        name: 'SSFM-V30 (Latest)',
+        value: 'ssfm-v30',
+        description: 'Latest model with improved prosody and multilingual support',
+      },
+      {
+        name: 'SSFM-V21',
+        value: 'ssfm-v21',
+        description: 'Stable production model with reliable quality',
+      },
+    ],
+    default: 'ssfm-v30',
+    description:
+      'Model to use for quick voice cloning. Use the same model in the following Text to Speech node for this cloned voice.',
+  },
+  // ----------------------------------
+  //         voice:delete
+  // ----------------------------------
+  {
+    displayName: 'Cloned Voice ID',
+    name: 'clonedVoiceId',
+    type: 'string',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['voice'],
+        operation: ['delete'],
+      },
+    },
+    default: '',
+    placeholder: 'e.g., uc_672c5f5ce59fac2a48faeaee',
+    description: 'The quick-cloned voice ID to delete. It must start with "uc_".',
   },
   // ----------------------------------
   //         voice:getOne

@@ -53,7 +53,8 @@ export const speechDescription: INodeProperties[] = [
     },
     default: { mode: 'list', value: '' },
 
-    description: 'Select a voice from the list or enter a Voice ID directly',
+    description:
+      'Select a voice from the list or enter a Voice ID directly. For quick-cloned voices, switch to By ID and use the Clone Voice output voice_id (uc_...).',
     modes: [
       {
         displayName: 'From List',
@@ -68,13 +69,14 @@ export const speechDescription: INodeProperties[] = [
         displayName: 'By ID',
         name: 'id',
         type: 'string',
-        placeholder: 'e.g., tc_60e5426de8b95f1d3000d7b5',
+        placeholder: 'e.g., tc_60e5426de8b95f1d3000d7b5 or uc_60e5426de8b95f1d3000d7b5',
         validation: [
           {
             type: 'regex',
             properties: {
-              regex: '^tc_[a-f0-9]+$',
-              errorMessage: 'Voice ID must start with "tc_" followed by hexadecimal characters',
+              regex: '^(tc|uc)_[a-f0-9]+$',
+              errorMessage:
+                'Voice ID must start with "tc_" for Typecast voices or "uc_" for cloned voices, followed by hexadecimal characters',
             },
           },
         ],
@@ -126,7 +128,7 @@ export const speechDescription: INodeProperties[] = [
     ],
     default: 'ssfm-v30',
     description:
-      'Voice model to use for speech synthesis ssfm-v30 is recommended for best quality and Smart Emotion features',
+      'Voice model to use for speech synthesis. ssfm-v30 is recommended for best quality and Smart Emotion features. For quick-cloned voices, use the same model returned by Clone Voice.',
   },
   {
     displayName: 'Emotion Type',
