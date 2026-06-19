@@ -616,6 +616,17 @@ export class Typecast implements INodeType {
 
             // Streaming output rejects volume, but supports target_lufs.
             const output: IDataObject = {};
+            if (
+              additionalOptions.targetLufs !== undefined &&
+              additionalOptions.volume !== undefined &&
+              additionalOptions.volume !== 100
+            ) {
+              throw new NodeOperationError(
+                this.getNode(),
+                'target_lufs is mutually exclusive with a custom volume; leave Volume unset (default 100) or unset Target LUFS.',
+                { itemIndex: i },
+              );
+            }
             if (additionalOptions.targetLufs !== undefined) {
               output.target_lufs = additionalOptions.targetLufs;
             }
