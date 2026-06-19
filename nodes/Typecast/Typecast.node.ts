@@ -614,9 +614,11 @@ export class Typecast implements INodeType {
               body.prompt = prompt;
             }
 
-            // Streaming output rejects volume and target_lufs at the server,
-            // so only audio_pitch / audio_tempo / audio_format are forwarded.
+            // Streaming output rejects volume, but supports target_lufs.
             const output: IDataObject = {};
+            if (additionalOptions.targetLufs !== undefined) {
+              output.target_lufs = additionalOptions.targetLufs;
+            }
             if (additionalOptions.audioPitch !== undefined) {
               output.audio_pitch = additionalOptions.audioPitch;
             }
