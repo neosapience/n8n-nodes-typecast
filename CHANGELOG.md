@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.2] - 2026-06-19
+
+### Fixed
+
+- Forward `target_lufs` in streaming TTS requests while keeping the local `Volume` + `Target LUFS` mutual-exclusion guard consistent across speech operations.
+
 ## [1.2.1] - 2026-06-01
 
 ### Internal
@@ -40,7 +46,7 @@ No public-surface changes from 1.1.0. The Typecast node's operations, fields, an
 
 - **`voice:getOne` operation** — fetch a single V2 voice by ID via `GET /v2/voices/{voice_id}`. Returns the same enriched metadata shape (gender / age / use_cases / supported models / emotions) as the listing.
 - **`subscription` resource** with **`getMy` operation** — read plan tier, credit usage, and concurrency limit at runtime via `GET /v1/users/me/subscription`. Useful for quota-aware batching, plan gating, and rate-limit guards.
-- **`speech:textToSpeechStream` operation** — chunked low-latency TTS via `POST /v1/text-to-speech/stream`. The streaming endpoint rejects `volume` and `target_lufs`, so the node intentionally drops both fields from the request body.
+- **`speech:textToSpeechStream` operation** — chunked low-latency TTS via `POST /v1/text-to-speech/stream`. The streaming endpoint rejects `volume`, but supports `target_lufs`, so the node forwards Target LUFS in the request body.
 - **`speech:textToSpeechWithTimestamps` operation** — TTS with word- or character-level alignment via `POST /v1/text-to-speech/with-timestamps`. New `Granularity` field (`Default (Server Picks)` / `Word` / `Character` / `Both`) shown only for this operation. Audio comes back as a binary attachment; `words` / `characters` / `audio_format` / `audio_duration` go on the JSON side for downstream caption generation.
 - **`additionalOptions.targetLufs`** — absolute loudness normalization target in LUFS (`-70.0 ~ 0.0`). Mutually exclusive with `Volume` on the non-streaming endpoint; raises `NodeOperationError` locally if both are set with a non-default volume so the user does not see a confusing 4xx from the server.
 
@@ -64,7 +70,7 @@ No public-surface changes from 1.1.0. The Typecast node's operations, fields, an
 
 ### Notes
 
-- The Typecast API endpoint behind streaming TTS does not accept `volume` or `target_lufs` server-side. The node displays `Volume` and `Target LUFS` in `additionalOptions` for all three speech operations because of n8n's per-collection `displayOptions` model, but the streaming branch silently drops both fields. A follow-up may hide the two fields when the operation is `textToSpeechStream` for cleaner UX.
+- The Typecast API endpoint behind streaming TTS does not accept `volume` server-side, but accepts `target_lufs`. The node displays `Volume` and `Target LUFS` in `additionalOptions` for all three speech operations because of n8n's per-collection `displayOptions` model; the streaming branch drops `volume` and forwards `target_lufs`.
 - Quick voice cloning (`POST /v1/voices/clone` / `DELETE /v1/voices/{voice_id}`) is gated on `typecast-sdk` PR #32 / #33 reaching production. The corresponding n8n operations will land in a follow-up release once the endpoint is generally available on `api.typecast.ai`.
 
 ## [1.0.4] - 2026-01-28

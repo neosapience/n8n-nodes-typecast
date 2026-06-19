@@ -621,7 +621,7 @@ export const speechDescription: INodeProperties[] = [
         },
         default: -14,
         description:
-          'Absolute loudness normalization target in LUFS (-70.0 to 0.0). Set when you want the server to normalize output loudness (e.g. -14 LUFS for podcast / streaming standards). Mutually exclusive with Volume on the non-streaming endpoint; not accepted at all by streaming TTS.',
+          'Absolute loudness normalization target in LUFS (-70.0 to 0.0). Set when you want the server to normalize output loudness (e.g. -14 LUFS for podcast / streaming standards). Mutually exclusive with Volume on the non-streaming endpoint; supported by streaming TTS.',
       },
       {
         displayName: 'Volume',
@@ -633,7 +633,7 @@ export const speechDescription: INodeProperties[] = [
         },
         default: 100,
         description:
-          'Audio output volume level (0 - 200) 0 (silent) to 200 (maximum). Default: 100 (normal volume). Mutually exclusive with Target LUFS on the non-streaming endpoint, and not accepted at all by streaming TTS.',
+          'Audio output volume level (0 - 200) 0 (silent) to 200 (maximum). Default: 100 (normal volume). Mutually exclusive with Target LUFS on the non-streaming endpoint, and not accepted by streaming TTS.',
       },
     ],
   },
