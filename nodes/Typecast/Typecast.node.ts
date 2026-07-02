@@ -35,10 +35,17 @@ function guessAudioMime(filename: string, fallback: string | undefined, node: IN
   );
 }
 
-function normalizeClonedVoiceResponse(response: IDataObject, fallbackName: string, fallbackModel: string) {
+function normalizeClonedVoiceResponse(
+  response: IDataObject,
+  fallbackName: string,
+  fallbackModel: string,
+) {
   const payload = (response.result || response.data || response) as IDataObject;
   const voiceId = (payload.voice_id || payload.voiceId) as string | undefined;
-  const voiceName = (payload.name || payload.voice_name || payload.voiceName || fallbackName) as string;
+  const voiceName = (payload.name ||
+    payload.voice_name ||
+    payload.voiceName ||
+    fallbackName) as string;
   const model = (payload.model || fallbackModel) as string;
 
   return {
@@ -278,20 +285,23 @@ export class Typecast implements INodeType {
             form.append('model', model);
             form.append('file', new Blob([audioBytes], { type: mimeType }), filename);
 
-            const response = await typecastApiRequestFormData.call(
+            const response = (await typecastApiRequestFormData.call(
               this,
               'POST',
               '/voices/clone',
               form,
               {},
               'v1',
-            ) as IDataObject;
+            )) as IDataObject;
             const clonedVoice = normalizeClonedVoiceResponse(response, name, model);
 
             returnData.push(
-              ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(clonedVoice), {
-                itemData: { item: i },
-              }),
+              ...this.helpers.constructExecutionMetaData(
+                this.helpers.returnJsonArray(clonedVoice),
+                {
+                  itemData: { item: i },
+                },
+              ),
             );
           }
 
@@ -348,6 +358,28 @@ export class Typecast implements INodeType {
             }
 
             const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v2');
+            returnData.push(
+              ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
+                itemData: { item: i },
+              }),
+            );
+          }
+
+          // ----------------------------------
+          //         voice:recommend
+          // ----------------------------------
+          if (operation === 'recommend') {
+            const query = this.getNodeParameter('recommendQuery', i) as string;
+            const count = this.getNodeParameter('recommendCount', i) as number;
+            const qs: IDataObject = { query, count };
+            const response = await typecastApiRequest.call(
+              this,
+              'GET',
+              '/voices/recommendations',
+              {},
+              qs,
+              'v1',
+            );
             returnData.push(
               ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
                 itemData: { item: i },
@@ -484,11 +516,7 @@ export class Typecast implements INodeType {
             const output: IDataObject = {};
             const targetLufs = additionalOptions.targetLufs;
             const volumeOpt = additionalOptions.volume;
-            if (
-              targetLufs !== undefined &&
-              volumeOpt !== undefined &&
-              volumeOpt !== 100
-            ) {
+            if (targetLufs !== undefined && volumeOpt !== undefined && volumeOpt !== 100) {
               throw new NodeOperationError(
                 this.getNode(),
                 'target_lufs is mutually exclusive with a custom volume; leave Volume unset (default 100) or unset Target LUFS.',

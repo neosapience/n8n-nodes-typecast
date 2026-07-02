@@ -38,6 +38,12 @@ export const voiceDescription: INodeProperties[] = [
         description: 'Get detailed information about a single voice by ID',
         action: 'Get a voice',
       },
+      {
+        name: 'Recommend Voices',
+        value: 'recommend',
+        description: 'Recommend voices from a text description',
+        action: 'Recommend voices',
+      },
     ],
     default: 'getMany',
   },
@@ -136,6 +142,44 @@ export const voiceDescription: INodeProperties[] = [
     default: '',
     placeholder: 'e.g., tc_672c5f5ce59fac2a48faeaee',
     description: 'The voice ID to look up via the V2 voices endpoint',
+  },
+  // ----------------------------------
+  //         voice:recommend
+  // ----------------------------------
+  {
+    displayName: 'Query',
+    name: 'recommendQuery',
+    type: 'string',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['voice'],
+        operation: ['recommend'],
+      },
+    },
+    default: '',
+    placeholder: 'e.g., warm female voice for product tutorial',
+    description:
+      'Text description of the desired voice style, mood, language, use case, or content context',
+  },
+  {
+    displayName: 'Count',
+    name: 'recommendCount',
+    type: 'number',
+    required: true,
+    displayOptions: {
+      show: {
+        resource: ['voice'],
+        operation: ['recommend'],
+      },
+    },
+    typeOptions: {
+      minValue: 1,
+      maxValue: 10,
+    },
+    default: 5,
+    description:
+      'Maximum number of recommended voices to return. The response contains voice_id, voice_name, and score only; use Get Voice or Get All Voices for detailed metadata.',
   },
   // ----------------------------------
   //         voice:getMany

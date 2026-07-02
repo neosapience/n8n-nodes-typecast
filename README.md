@@ -12,6 +12,7 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
   - Delete Cloned Voice: delete a quick-cloned voice by its `uc_...` voice ID
   - Get All Voices: list voices with `model` / `gender` / `age` / `use_case` filters
   - Get Voice: look up a single voice by ID via the V2 API
+  - Recommend Voices: find voice candidates from a text description
 - **Speech Resource**
   - Text to Speech: convert text to speech using a selected voice
   - Text to Speech (Streaming): low-latency chunked audio via `POST /v1/text-to-speech/stream`
@@ -26,7 +27,7 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 - Node: `Typecast`
   - Resources: `voice`, `speech`, `subscription`
   - Operations:
-    - `voice`: `clone`, `delete`, `getMany`, `getOne`
+    - `voice`: `clone`, `delete`, `getMany`, `getOne`, `recommend`
     - `speech`: `textToSpeech`, `textToSpeechStream`, `textToSpeechWithTimestamps`
     - `subscription`: `getMy`
 
