@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.3] - 2026-07-02
+
+### Added
+
+- Added a **Recommend Voices** operation under the voice resource. It calls the Typecast voice recommendation API with a text description and returns the matched `voice_id`, `voice_name`, and similarity `score`.
+
+### Notes
+
+- Recommendation results intentionally include only the matched voice ID, voice name, and score. Use the existing voice list or get-one operations when workflows need detailed voice metadata.
+
+### Internal
+
+- Pinned ESLint back to the 9.x line so the n8n community-node lint rules run successfully during the release workflow.
+
 ## [1.2.2] - 2026-06-19
 
 ### Fixed
