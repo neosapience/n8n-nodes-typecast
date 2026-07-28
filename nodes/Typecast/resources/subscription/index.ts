@@ -17,8 +17,7 @@ export const subscriptionDescription: INodeProperties[] = [
       {
         name: 'Get My Subscription',
         value: 'getMy',
-        description:
-          'Return the authenticated user plan tier, credits, and concurrency limit',
+        description: 'Return the authenticated user plan tier, credits, and concurrency limit',
         action: 'Get my subscription',
       },
     ],
