@@ -17,10 +17,14 @@ function throwTypecastApiError(
   const errorData = error as {
     message?: string;
     httpCode?: number | string;
-    errorResponse?: { error_code?: string };
+    errorResponse?: { error_code?: string; message?: string; detail?: string };
     error_code?: string;
   };
-  const errorMessage = errorData.message || 'Unknown error';
+  const errorMessage =
+    errorData.errorResponse?.message ||
+    errorData.errorResponse?.detail ||
+    errorData.message ||
+    'Unknown error';
   const statusCode = errorData.httpCode;
   const errorCode = errorData.errorResponse?.error_code || errorData.error_code;
 
