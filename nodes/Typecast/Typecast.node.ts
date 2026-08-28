@@ -24,6 +24,16 @@ import { subscriptionDescription } from './resources/subscription';
 
 const CLONING_MAX_FILE_SIZE = 25 * 1024 * 1024;
 
+function voiceDisplayName(voice: IDataObject): string {
+  const name = voice.voice_name;
+  if (typeof name === 'string') return name;
+  if (name && typeof name === 'object' && !Array.isArray(name)) {
+    const localized = name as IDataObject;
+    return (localized.eng || localized.kor || Object.values(localized)[0] || voice.voice_id) as string;
+  }
+  return voice.voice_id as string;
+}
+
 function guessAudioMime(filename: string, fallback: string | undefined, node: INode): string {
   const lower = filename.toLowerCase();
   if (lower.endsWith('.wav')) return 'audio/wav';
@@ -130,15 +140,14 @@ export class Typecast implements INodeType {
             qs.model = model;
           }
 
-          // Fetch voices from v2 API filtered by model
-          const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v2');
+          const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v3');
 
           // Process the response - it could be an array directly or wrapped in a result object
           const voices = Array.isArray(response) ? response : response.result || [];
 
           for (const voice of voices) {
             const voiceId = voice.voice_id;
-            const voiceName = voice.voice_name || voiceId;
+            const voiceName = voiceDisplayName(voice);
             const gender = voice.gender
               ? voice.gender.charAt(0).toUpperCase() + voice.gender.slice(1)
               : 'Unknown';
@@ -288,7 +297,7 @@ export class Typecast implements INodeType {
             const response = (await typecastApiRequestFormData.call(
               this,
               'POST',
-              '/voices/clone',
+              '/custom-voices/instant-clone',
               form,
               {},
               'v1',
@@ -321,7 +330,7 @@ export class Typecast implements INodeType {
             await typecastApiRequestNoContent.call(
               this,
               'DELETE',
-              `/voices/${encodeURIComponent(voiceId)}`,
+              `/custom-voices/${encodeURIComponent(voiceId)}`,
               {},
               'v1',
             );
@@ -357,7 +366,7 @@ export class Typecast implements INodeType {
               qs.use_cases = filters.use_cases;
             }
 
-            const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v2');
+            const response = await typecastApiRequest.call(this, 'GET', '/voices', {}, qs, 'v3');
             returnData.push(
               ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
                 itemData: { item: i },
@@ -398,7 +407,7 @@ export class Typecast implements INodeType {
               `/voices/${encodeURIComponent(voiceId)}`,
               {},
               {},
-              'v2',
+              'v3',
             );
             returnData.push(
               ...this.helpers.constructExecutionMetaData(this.helpers.returnJsonArray(response), {
