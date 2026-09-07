@@ -141,7 +141,7 @@ export const voiceDescription: INodeProperties[] = [
     },
     default: '',
     placeholder: 'e.g., tc_672c5f5ce59fac2a48faeaee',
-    description: 'The voice ID to look up via the V2 voices endpoint',
+    description: 'The voice ID to look up via the V3 voices endpoint',
   },
   // ----------------------------------
   //         voice:recommend
