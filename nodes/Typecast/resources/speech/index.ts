@@ -603,6 +603,15 @@ export const speechDescription: INodeProperties[] = [
           'Language code following ISO 639-3 standard Case-insensitive (both "ENG" and "eng" are accepted). If not provided, language will be auto-detected based on text content. ssfm-v30 supports 37 languages, ssfm-v21 supports 27 languages.',
       },
       {
+        displayName: 'Remaining Silence (Ms)',
+        name: 'removeSilenceMs',
+        type: 'number',
+        typeOptions: { minValue: 0, maxValue: 1000, numberPrecision: 0 },
+        default: 300,
+        description:
+          'Remaining detected silence in milliseconds (0–1000). Zero removes silence; omit this option to disable. Streaming playback may need additional buffering.',
+      },
+      {
         displayName: 'Seed',
         name: 'seed',
         type: 'number',

@@ -21,6 +21,7 @@ import {
 import { voiceDescription } from './resources/voice';
 import { speechDescription } from './resources/speech';
 import { subscriptionDescription } from './resources/subscription';
+import { silenceOutput } from './shared/output';
 
 const CLONING_MAX_FILE_SIZE = 25 * 1024 * 1024;
 
@@ -522,7 +523,7 @@ export class Typecast implements INodeType {
             }
 
             // Add output settings (target_lufs is mutually exclusive with volume)
-            const output: IDataObject = {};
+            const output: IDataObject = silenceOutput(additionalOptions.removeSilenceMs);
             const targetLufs = additionalOptions.targetLufs;
             const volumeOpt = additionalOptions.volume;
             if (targetLufs !== undefined && volumeOpt !== undefined && volumeOpt !== 100) {
@@ -652,7 +653,7 @@ export class Typecast implements INodeType {
             }
 
             // Streaming output rejects volume, but supports target_lufs.
-            const output: IDataObject = {};
+            const output: IDataObject = silenceOutput(additionalOptions.removeSilenceMs);
             if (
               additionalOptions.targetLufs !== undefined &&
               additionalOptions.volume !== undefined &&
@@ -784,7 +785,7 @@ export class Typecast implements INodeType {
 
             // with-timestamps accepts the same Output object as textToSpeech.
             // Volume and target_lufs are mutually exclusive at the server.
-            const output: IDataObject = {};
+            const output: IDataObject = silenceOutput(additionalOptions.removeSilenceMs);
             const targetLufs = additionalOptions.targetLufs;
             const volume = additionalOptions.volume;
             if (targetLufs !== undefined && volume !== undefined && volume !== 100) {
