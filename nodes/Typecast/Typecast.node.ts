@@ -551,10 +551,6 @@ export class Typecast implements INodeType {
               body.output = output;
             }
 
-            // Add seed if provided
-            if (additionalOptions.seed !== undefined) {
-              body.seed = additionalOptions.seed;
-            }
 
             const binaryProperty = additionalOptions.binaryProperty || 'data';
             const audioFormat = additionalOptions.audioFormat || 'wav';
@@ -681,9 +677,6 @@ export class Typecast implements INodeType {
               body.output = output;
             }
 
-            if (additionalOptions.seed !== undefined) {
-              body.seed = additionalOptions.seed;
-            }
 
             const binaryProperty = (additionalOptions.binaryProperty as string) || 'data';
             const audioFormat = (additionalOptions.audioFormat as string) || 'wav';
@@ -813,9 +806,6 @@ export class Typecast implements INodeType {
               body.output = output;
             }
 
-            if (additionalOptions.seed !== undefined) {
-              body.seed = additionalOptions.seed;
-            }
 
             const qs: IDataObject = {};
             if (granularity) qs.granularity = granularity;
