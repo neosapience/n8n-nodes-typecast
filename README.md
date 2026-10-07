@@ -84,13 +84,29 @@ npm install
 # Build the node
 npm run build
 
-# Lint & format
-npm run lint
+# Format
 npm run format
 
 # Run development mode
 npm run dev
 ```
+
+## Release validation
+
+The release workflow validates and publishes a separate package manifest without development dependencies or development-only overrides. Source development pins are retained. The published package must pass the unchanged official community lint, build, request regression tests, and runtime dependency audit.
+
+For a fresh local release check after installing dependencies:
+
+```bash
+npm run build
+node --test tests/*.test.cjs
+node scripts/prepare-release.cjs
+npm --prefix .release-package run lint
+npm --prefix .release-package run build
+(cd .release-package && node --test tests/*.test.cjs && npm pack --dry-run)
+```
+
+The staging directory must not already exist. Only a version-matching `v*` tag triggers publication; PR and main builds validate without publishing.
 
 ## Resources
 

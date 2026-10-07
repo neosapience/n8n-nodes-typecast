@@ -18,7 +18,10 @@ name: Release
 #    workflow takes over from there.
 
 on:
+  pull_request:
+    branches: ['main']
   push:
+    branches: ['main']
     tags:
       - 'v*'
 
@@ -39,21 +42,22 @@ jobs:
       # change what runs during a publish. The trailing `# v4.x.x` comment is
       # how Dependabot picks the line up for automated SHA refreshes.
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org/'
           cache: 'npm'
 
       - name: Upgrade npm for trusted publishing
         run: |
-          npm install -g npm@latest
+          npm install -g npm@11.17.0
           npm --version
 
       - name: Verify tag matches package version
+        if: startsWith(github.ref, 'refs/tags/v')
         # Guards against a tag/package.json version drift: if someone pushes
         # `git tag v1.2.3` but package.json is still on 1.2.2, we want the
         # publish step to never run and the failure to surface immediately.
@@ -70,11 +74,27 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint
-
       - name: Build
         run: npm run build
 
+      - name: Verify development security pins and request behavior
+        run: node --test tests/*.test.cjs
+
+      - name: Audit package-owned runtime dependencies
+        run: npm audit --omit=dev --audit-level=moderate
+
+      - name: Prepare the publish package
+        run: node scripts/prepare-release.cjs
+
+      - name: Official community lint and build on the publish package
+        working-directory: .release-package
+        run: npm run lint && npm run build
+
+      - name: Verify the built publish package
+        working-directory: .release-package
+        run: node --test tests/*.test.cjs && npm pack --dry-run
+
       - name: Publish to npm with provenance
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: .release-package
         run: npm publish --provenance --access public

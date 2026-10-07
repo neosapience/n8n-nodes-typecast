@@ -1,6 +1,6 @@
 {
   "name": "@neosapience/n8n-nodes-typecast",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "n8n node for Typecast TTS API integration",
   "keywords": [
     "n8n-community-node-package",
@@ -67,9 +67,15 @@
     "typescript": "^6.0.3"
   },
   "overrides": {
-    "@n8n/backend-network": { "qs": "^6.16.0" },
-    "@langchain/classic": { "uuid": "^11.1.1" },
-    "@langchain/community": { "uuid": "^11.1.1" }
+    "@n8n/backend-network": {
+      "qs": "^6.16.0"
+    },
+    "@langchain/classic": {
+      "uuid": "^11.1.1"
+    },
+    "@langchain/community": {
+      "uuid": "^11.1.1"
+    }
   },
   "peerDependencies": {
     "n8n-workflow": "*"
