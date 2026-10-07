@@ -612,14 +612,6 @@ export const speechDescription: INodeProperties[] = [
           'Remaining detected silence in milliseconds (0–1000). Zero removes silence; omit this option to disable. Streaming playback may need additional buffering.',
       },
       {
-        displayName: 'Seed',
-        name: 'seed',
-        type: 'number',
-        default: 42,
-        description:
-          'Random seed for controlling speech generation variations Use any integer value. Using the same seed with identical parameters will produce consistent results, useful for reproducibility.',
-      },
-      {
         displayName: 'Target LUFS',
         name: 'targetLufs',
         type: 'number',
