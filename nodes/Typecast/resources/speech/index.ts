@@ -44,6 +44,9 @@ export const speechDescription: INodeProperties[] = [
     displayName: 'Voice ID',
     name: 'voiceId',
     type: 'resourceLocator',
+    typeOptions: {
+      loadOptionsDependsOn: ['model'],
+    },
     required: true,
     displayOptions: {
       show: {
