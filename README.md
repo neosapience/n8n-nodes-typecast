@@ -5,6 +5,14 @@
 
 Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io/) workflows with this community node.
 
+## SSFM 3.1 model selection
+
+Set the TTS model to `ssfm-v31` explicitly and choose a compatible voice using
+`GET /v3/voices?model=ssfm-v31`. Check the selected voice's `models` and supported
+emotions. Existing defaults are unchanged; do not infer language or cloning
+support from another model.
+
+
 ## Features
 
 - **Voice Resource**

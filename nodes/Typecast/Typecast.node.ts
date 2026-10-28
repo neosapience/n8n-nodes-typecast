@@ -156,12 +156,10 @@ export class Typecast implements INodeType {
               ? voice.age.replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
               : 'Unknown';
 
-            // Get supported emotions from models array (prefer ssfm-v30)
+            // Display only emotions supported by the selected model.
             let emotions: string[] = [];
             if (voice.models && Array.isArray(voice.models)) {
-              // Try to find ssfm-v30 first, then fall back to first model
-              const v30Model = voice.models.find((m: IDataObject) => m.version === 'ssfm-v30');
-              const modelToUse = v30Model || voice.models[0];
+              const modelToUse = voice.models.find((m: IDataObject) => m.version === model);
               if (modelToUse && Array.isArray(modelToUse.emotions)) {
                 emotions = modelToUse.emotions as string[];
               }
@@ -469,8 +467,8 @@ export class Typecast implements INodeType {
             // Build prompt object based on model and emotion type
             const prompt: IDataObject = {};
 
-            if (model === 'ssfm-v30') {
-              // Get emotion type for ssfm-v30
+            if (model === 'ssfm-v30' || model === 'ssfm-v31') {
+              // Get emotion type for SSFM 3.x
               const emotionType = this.getNodeParameter('emotionType', i, 'preset') as string;
 
               if (emotionType === 'smart') {
@@ -605,7 +603,7 @@ export class Typecast implements INodeType {
 
             // Build prompt (mirrors textToSpeech)
             const prompt: IDataObject = {};
-            if (model === 'ssfm-v30') {
+            if (model === 'ssfm-v30' || model === 'ssfm-v31') {
               const emotionType = this.getNodeParameter('emotionType', i, 'preset') as string;
               if (emotionType === 'smart') {
                 prompt.emotion_type = 'smart';
@@ -733,7 +731,7 @@ export class Typecast implements INodeType {
 
             // Build prompt (mirrors textToSpeech)
             const prompt: IDataObject = {};
-            if (model === 'ssfm-v30') {
+            if (model === 'ssfm-v30' || model === 'ssfm-v31') {
               const emotionType = this.getNodeParameter('emotionType', i, 'preset') as string;
               if (emotionType === 'smart') {
                 prompt.emotion_type = 'smart';
