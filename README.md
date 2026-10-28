@@ -44,6 +44,8 @@ Integrate [Typecast](https://typecast.ai/) AI TTS into your [n8n](https://n8n.io
 3. Provide required parameters (e.g., Voice ID, Text). Select `ssfm-v31`, `ssfm-v30` (default), or `ssfm-v21` in **Model**, then choose a compatible Voice ID. The voice dropdown shows the selected model's supported emotions.
 4. Connect and run your workflow
 
+Choose **Model** before entering a Voice ID or expression. n8n resets the Voice ID when the model changes, including values entered in **By ID** mode.
+
 ### Quick Cloning Example
 
 1. Add a node that outputs an audio file as binary data, such as **Read/Write Files from Disk** or an HTTP download node.

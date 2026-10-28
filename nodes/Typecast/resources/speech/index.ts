@@ -57,7 +57,7 @@ export const speechDescription: INodeProperties[] = [
     default: { mode: 'list', value: '' },
 
     description:
-      'Select a voice from the list or enter a Voice ID directly. For quick-cloned voices, switch to By ID and use the Clone Voice output voice_id (uc_...).',
+      'Select a voice from the list or enter a Voice ID directly. Choose Model first: changing it resets Voice ID, including By ID values and expressions. For quick-cloned voices, switch to By ID and use the Clone Voice output voice_id (uc_...).',
     modes: [
       {
         displayName: 'From List',
