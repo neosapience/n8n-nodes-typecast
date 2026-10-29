@@ -208,7 +208,12 @@ export const voiceDescription: INodeProperties[] = [
             description: 'List all available voices for all models',
           },
           {
-            name: 'SSFM-V30 (Latest)',
+            name: 'SSFM-V31',
+            value: 'ssfm-v31',
+            description: 'List voices compatible with SSFM 3.1',
+          },
+          {
+            name: 'SSFM-V30',
             value: 'ssfm-v30',
             description: 'Latest model with improved prosody and additional emotion presets',
           },

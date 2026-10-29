@@ -44,6 +44,9 @@ export const speechDescription: INodeProperties[] = [
     displayName: 'Voice ID',
     name: 'voiceId',
     type: 'resourceLocator',
+    typeOptions: {
+      loadOptionsDependsOn: ['model'],
+    },
     required: true,
     displayOptions: {
       show: {
@@ -54,7 +57,7 @@ export const speechDescription: INodeProperties[] = [
     default: { mode: 'list', value: '' },
 
     description:
-      'Select a voice from the list or enter a Voice ID directly. For quick-cloned voices, switch to By ID and use the Clone Voice output voice_id (uc_...).',
+      'Select a voice from the list or enter a Voice ID directly. Choose Model first: changing it resets Voice ID, including By ID values and expressions. For quick-cloned voices, switch to By ID and use the Clone Voice output voice_id (uc_...).',
     modes: [
       {
         displayName: 'From List',
@@ -115,10 +118,14 @@ export const speechDescription: INodeProperties[] = [
     },
     options: [
       {
-        name: 'SSFM-V30 (Latest)',
+        name: 'SSFM-V31',
+        value: 'ssfm-v31',
+        description: 'SSFM 3.1; select a compatible voice and supported emotions',
+      },
+      {
+        name: 'SSFM-V30',
         value: 'ssfm-v30',
-        description:
-          'Latest model with improved prosody, Smart Emotion, and 37 language support (recommended)',
+        description: 'SSFM 3.0 with Smart Emotion; select a compatible voice',
       },
       {
         name: 'SSFM-V21',
@@ -128,7 +135,7 @@ export const speechDescription: INodeProperties[] = [
     ],
     default: 'ssfm-v30',
     description:
-      'Voice model to use for speech synthesis. ssfm-v30 is recommended for best quality and Smart Emotion features. For quick-cloned voices, use the same model returned by Clone Voice.',
+      'Voice model to use for speech synthesis. Select a compatible voice for ssfm-v31 or ssfm-v30 Smart Emotion features. For quick-cloned voices, use the same model returned by Clone Voice.',
   },
   {
     displayName: 'Emotion Type',
@@ -138,7 +145,7 @@ export const speechDescription: INodeProperties[] = [
       show: {
         resource: ['speech'],
         operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
-        model: ['ssfm-v30'],
+        model: ['ssfm-v30', 'ssfm-v31'],
       },
     },
     options: [
@@ -156,7 +163,7 @@ export const speechDescription: INodeProperties[] = [
     ],
     default: 'smart',
     description:
-      'How to control emotional expression (ssfm-v30 only) Smart: AI detects emotion automatically from context. Preset: Manual selection with 7 emotion options.',
+      'How to control emotional expression (ssfm-v30/ssfm-v31) Smart: AI detects emotion automatically from context. Preset: Select an emotion supported by the voice and model.',
   },
   {
     displayName: 'Previous Text',
@@ -166,7 +173,7 @@ export const speechDescription: INodeProperties[] = [
       show: {
         resource: ['speech'],
         operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
-        model: ['ssfm-v30'],
+        model: ['ssfm-v30', 'ssfm-v31'],
         emotionType: ['smart'],
       },
     },
@@ -186,7 +193,7 @@ export const speechDescription: INodeProperties[] = [
       show: {
         resource: ['speech'],
         operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
-        model: ['ssfm-v30'],
+        model: ['ssfm-v30', 'ssfm-v31'],
         emotionType: ['smart'],
       },
     },
@@ -206,7 +213,7 @@ export const speechDescription: INodeProperties[] = [
       show: {
         resource: ['speech'],
         operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
-        model: ['ssfm-v30'],
+        model: ['ssfm-v30', 'ssfm-v31'],
         emotionType: ['preset'],
       },
     },
@@ -259,7 +266,7 @@ export const speechDescription: INodeProperties[] = [
       show: {
         resource: ['speech'],
         operation: ['textToSpeech', 'textToSpeechStream', 'textToSpeechWithTimestamps'],
-        model: ['ssfm-v30'],
+        model: ['ssfm-v30', 'ssfm-v31'],
         emotionType: ['preset'],
       },
     },
